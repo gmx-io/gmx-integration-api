@@ -1,12 +1,23 @@
 import { AddressZero, ARBITRUM, AVALANCHE } from './constants'
-
-export const TOKENS = {
+type Token = {
+  name: string
+  symbol: string
+  decimals: number
+  address: string
+  isNative?: boolean
+  isWrapped?: boolean
+  baseSymbol?: string
+  isStable?: boolean
+  isShortable?: boolean
+  isTempHidden?: boolean
+}
+export const TOKENS: { [key: number]: Token[] } = {
   [ARBITRUM]: [
     {
       name: 'Ethereum',
       symbol: 'ETH',
       decimals: 18,
-      address: AddressZero,
+      address: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
       isNative: true,
       isShortable: true,
     },
@@ -139,4 +150,8 @@ export const TOKENS = {
       isTempHidden: true,
     },
   ],
+}
+
+export function getPerpTokens(chainId: number) {
+  return TOKENS[chainId].filter((token) => !token.isStable && !token.isWrapped)
 }

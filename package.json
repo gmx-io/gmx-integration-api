@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "graphql": "^16.6.0",
     "graphql-request": "^5.2.0",
     "next": "canary",
     "react": "latest",
