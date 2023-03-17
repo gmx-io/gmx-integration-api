@@ -155,3 +155,11 @@ export const TOKENS: { [key: number]: Token[] } = {
 export function getPerpTokens(chainId: number) {
   return TOKENS[chainId].filter((token) => !token.isStable && !token.isWrapped)
 }
+
+export function getTokenBySymbol(chainId: number, symbol: string) {
+  const token = TOKENS[chainId].find((token) => token.symbol === symbol)
+  if (!token) {
+    throw new Error(`Incorrect symbol "${symbol}" for chainId ${chainId}`)
+  }
+  return token
+}

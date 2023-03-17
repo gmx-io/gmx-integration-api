@@ -1,4 +1,7 @@
-import { getPerpTokens } from '../config/tokens'
+import { ARBITRUM } from '../config/constants'
+import { getPerpTokens, getTokenBySymbol } from '../config/tokens'
+import { getTokenPrice } from './prices'
+import { getLast24hVolume } from './volume'
 
 type Pair = {
   ticker_id: string
@@ -15,18 +18,39 @@ type Pair = {
   ask?: number
   high?: number
   low?: number
+  funding_rate?: number
+  next_funding_rate?: number
+  next_funding_timestamp?: number
 }
 export const PAIRS: Pair[] = []
 
-function getPairMeta(ticker: string) {
-  const pair = {
+async function getPairMetadata(ticker: string, chainId: number) {
+  const token = getTokenBySymbol(chainId, ticker)
+  const { lastPrice, high, low, openInterest } = await getTokenPrice(
+    ARBITRUM,
+    token.address
+  )
+  const volumeLast24Hours = await getLast24hVolume(ARBITRUM, token.address)
+  return {
     ticker_id: ticker + '_USD',
     base_currency: ticker,
     target_currency: 'USD',
+    product_type: 'Perpetual',
+    last_price: lastPrice,
+    low,
+    high,
+    base_volume: volumeLast24Hours / (high + low) / 2,
+    target_volume: volumeLast24Hours,
+    open_interest: openInterest,
   }
 }
 
-export default function getPairs(chainId: number) {
+export default async function getPairs(chainId: number) {
   const tokens = getPerpTokens(chainId)
-  return tokens
+  return Promise.all(
+    tokens.map(async (token) => {
+      const pair = await getPairMetadata(token.symbol, chainId)
+      return pair
+    })
+  )
 }

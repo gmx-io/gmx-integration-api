@@ -1,13 +1,10 @@
-import { gql } from 'graphql-request'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { ARBITRUM } from '../../../config/constants'
 import getPairs from '../../../utils/getPairs'
 
 async function handleRequest(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const tokens = getPairs(ARBITRUM)
-
-    const data = { tokens }
+    const data = await getPairs(ARBITRUM)
     res.status(200).json(data)
   } catch (error) {
     console.error('GraphQL request failed:', error)
