@@ -27,7 +27,7 @@ export const PAIRS: Pair[] = []
 async function getPairMetadata(ticker: string, chainId: number) {
   const token = getTokenBySymbol(chainId, ticker)
   const { lastPrice, high, low, openInterest } = await getTokenPrice(
-    ARBITRUM,
+    chainId,
     token.address
   )
   const volumeLast24Hours = await getLast24hVolume(chainId, token.address)
