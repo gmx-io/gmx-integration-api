@@ -30,7 +30,7 @@ async function getPairMetadata(ticker: string, chainId: number) {
     ARBITRUM,
     token.address
   )
-  const volumeLast24Hours = await getLast24hVolume(ARBITRUM, token.address)
+  const volumeLast24Hours = await getLast24hVolume(chainId, token.address)
   return {
     ticker_id: ticker + '_USD',
     base_currency: ticker,
@@ -39,7 +39,7 @@ async function getPairMetadata(ticker: string, chainId: number) {
     last_price: lastPrice,
     low,
     high,
-    base_volume: volumeLast24Hours / (high + low) / 2,
+    base_volume: volumeLast24Hours / ((high + low) / 2),
     target_volume: volumeLast24Hours,
     open_interest: openInterest,
   }

@@ -39,7 +39,7 @@ const query = gql`
       period
       id
     }
-    openInterestByToken(id: $id) {
+    openInterestByToken(id: $id, period: "total") {
       period
       short
       long
@@ -59,6 +59,7 @@ export async function getTokenPrice(chainId: number, tokenAddress: string) {
     const last24Hours = tokenPrices.fastPrices.map(
       (p: FastPrice) => p.value / 1e30
     )
+    console.log({ tokenPrices })
     return {
       lastPrice: tokenPrices.fastPrice.value / 1e30,
       high: Math.max(...last24Hours),
