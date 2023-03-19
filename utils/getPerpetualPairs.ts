@@ -1,4 +1,3 @@
-import { ARBITRUM } from '../config/constants'
 import { getPerpTokens, getTokenBySymbol } from '../config/tokens'
 import { getTokenPrice } from './prices'
 import { getLast24hVolume } from './volume'
@@ -45,7 +44,7 @@ async function getPairMetadata(ticker: string, chainId: number) {
   }
 }
 
-export default async function getPairs(chainId: number) {
+export default async function getPerpetualPairs(chainId: number) {
   const tokens = getPerpTokens(chainId)
   return Promise.all(
     tokens.map(async (token) => {

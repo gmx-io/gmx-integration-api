@@ -2,24 +2,23 @@ import { gql } from 'graphql-request'
 import { SUBGRAPHS_API_URLS } from '../config/constants'
 import fetchGraphQL from '../lib/fetchGraphQL'
 
-interface FastPrice {
-  value: number
-  token: string
-  period: string
-}
-
 const query = gql`
   query Last24hVolume($id: ID!, $timestamp: Int!) {
     hourlyVolumeByTokens(
       orderBy: timestamp
       orderDirection: desc
-      where: { timestamp_gt: $timestamp, tokenB: $id }
+      first: 1000
+      where: { timestamp_gte: $timestamp, tokenB: $id }
     ) {
       tokenA
       tokenB
       margin
-      liquidation
       timestamp
+    }
+    liquidatedPositions(
+      where: { timestamp_gte: $timestamp, indexToken: $id, type: full }
+    ) {
+      size
     }
   }
 `
@@ -32,9 +31,13 @@ export async function getLast24hVolume(chainId: number, tokenAddress: string) {
       id: contractAddress,
       timestamp: Math.floor(Date.now() / 1000) - 86400,
     })
-    return last24hVolumeOfToken.hourlyVolumeByTokens
-      .map((volume: any) => volume.margin / 1e30 + volume.liquidation / 1e30)
+    const marginVolume = last24hVolumeOfToken.hourlyVolumeByTokens
+      .map((volume: any) => volume.margin / 1e30)
       .reduce((a: number, b: number) => a + b, 0)
+    const liquidationVolume = last24hVolumeOfToken.liquidatedPositions
+      .map((p: any) => p.size / 1e30)
+      .reduce((a: number, b: number) => a + b, 0)
+    return marginVolume + liquidationVolume
   } catch (e) {
     console.error(e)
     return 0

@@ -163,3 +163,25 @@ export function getTokenBySymbol(chainId: number, symbol: string) {
   }
   return token
 }
+
+export function getTokenByAddress(chainId: number, address: string) {
+  const token = TOKENS[chainId].find((token) => token.address === address)
+  if (!token) {
+    throw new Error(`Incorrect address "${address}" for chainId ${chainId}`)
+  }
+  return token
+}
+
+export function getSwapPairs(chainId: number) {
+  const tokens = TOKENS[chainId].filter(
+    (token) => !token.isNative && !token.isTempHidden
+  )
+
+  const uniquePairs = []
+  for (let i = 0; i < tokens.length; i++) {
+    for (let j = i + 1; j < tokens.length; j++) {
+      uniquePairs.push([tokens[i].symbol, tokens[j].symbol])
+    }
+  }
+  return uniquePairs
+}
