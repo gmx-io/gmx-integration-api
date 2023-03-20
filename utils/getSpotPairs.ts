@@ -1,30 +1,7 @@
-import {
-  getSwapPairs,
-  getTokenByAddress,
-  getTokenBySymbol,
-} from '../config/tokens'
+import { getSwapPairs, getTokenBySymbol } from '../config/tokens'
+import { getTokenPrice } from './prices'
 import { getLast24hSwapVolume } from './spotVolume'
-
-type Pair = {
-  ticker_id: string
-  base_currency: string
-  target_currency: string
-  last_price: number
-  base_volume: number
-  target_volume: number
-  product_type: string
-  open_interest: number
-  index_price: number
-  index_name: string
-  bid?: number
-  ask?: number
-  high?: number
-  low?: number
-  funding_rate?: number
-  next_funding_rate?: number
-  next_funding_timestamp?: number
-}
-export const PAIRS: Pair[] = []
+import { Pair } from './types'
 
 async function getPairMetadata(
   chainId: number,
@@ -33,26 +10,28 @@ async function getPairMetadata(
 ) {
   const tokenAInfo = getTokenBySymbol(chainId, tokenA)
   const tokenBInfo = getTokenBySymbol(chainId, tokenB)
-  const volumes = await getLast24hSwapVolume(
+  const volume = await getLast24hSwapVolume(
     chainId,
     tokenAInfo.address,
     tokenBInfo.address
   )
+  const tokenAPrice = await getTokenPrice(chainId, tokenAInfo.address)
+  const tokenBPrice = await getTokenPrice(chainId, tokenAInfo.address)
+
   return {
     ticker_id: tokenA + '_' + tokenB,
-    base_currency: tokenAInfo.address,
-    target_currency: tokenBInfo.address,
+    base_currency: tokenA,
+    target_currency: tokenB,
     product_type: 'Spot',
-    last_price: 0,
-    low: 0,
-    high: 0,
-    base_volume: volumes,
-    target_volume: 0,
-    open_interest: 0,
+    last_price: tokenAPrice.lastPrice,
+    low: tokenAPrice.low,
+    high: tokenAPrice.high,
+    base_volume: volume / (tokenAPrice.low + tokenAPrice.low) / 2,
+    target_volume: volume / (tokenBPrice.low + tokenBPrice.low) / 2,
   }
 }
 
-export default async function getSpotPairs(chainId: number) {
+export default async function getSpotPairs(chainId: number): Promise<Pair[]> {
   const pairs = getSwapPairs(chainId)
   return Promise.all(
     pairs.map(async (pair) => {

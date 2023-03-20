@@ -1,34 +1,13 @@
 import { getPerpTokens, getTokenBySymbol } from '../config/tokens'
+import { getTokenOpenInterest } from './getTokenOpenInterest'
 import { getTokenPrice } from './prices'
+import { Pair } from './types'
 import { getLast24hVolume } from './volume'
-
-type Pair = {
-  ticker_id: string
-  base_currency: string
-  target_currency: string
-  last_price: number
-  base_volume: number
-  target_volume: number
-  product_type: string
-  open_interest: number
-  index_price: number
-  index_name: string
-  bid?: number
-  ask?: number
-  high?: number
-  low?: number
-  funding_rate?: number
-  next_funding_rate?: number
-  next_funding_timestamp?: number
-}
-export const PAIRS: Pair[] = []
 
 async function getPairMetadata(ticker: string, chainId: number) {
   const token = getTokenBySymbol(chainId, ticker)
-  const { lastPrice, high, low, openInterest } = await getTokenPrice(
-    chainId,
-    token.address
-  )
+  const openInterest = await getTokenOpenInterest(chainId, token.address)
+  const { lastPrice, high, low } = await getTokenPrice(chainId, token.address)
   const volumeLast24Hours = await getLast24hVolume(chainId, token.address)
   return {
     ticker_id: ticker + '_USD',
@@ -44,7 +23,9 @@ async function getPairMetadata(ticker: string, chainId: number) {
   }
 }
 
-export default async function getPerpetualPairs(chainId: number) {
+export default async function getPerpetualPairs(
+  chainId: number
+): Promise<Pair[]> {
   const tokens = getPerpTokens(chainId)
   return Promise.all(
     tokens.map(async (token) => {

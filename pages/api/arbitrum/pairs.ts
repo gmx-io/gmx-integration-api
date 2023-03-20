@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { ARBITRUM } from '../../../config/constants'
+import { ARBITRUM, pricesUrls } from '../../../config/constants'
 import getPerpetualPairs from '../../../utils/getPerpetualPairs'
 import getSpotPairs from '../../../utils/getSpotPairs'
 import { getLast24hTotalVolume } from '../../../utils/totalVolumeTest'
@@ -18,6 +18,7 @@ async function handleRequest(req: NextApiRequest, res: NextApiResponse) {
       (acc, pair) => acc + pair.target_volume,
       0
     )
+    const prices = await fetch(pricesUrls[ARBITRUM]).then((res) => res.json())
 
     res.status(200).json({
       perpetualPairsInfo,
@@ -25,6 +26,7 @@ async function handleRequest(req: NextApiRequest, res: NextApiResponse) {
       totalSpotVolume,
       totalMarginVolume,
       verifyVolumes: { ...totalVolumes },
+      prices,
     })
   } catch (error) {
     console.error('GraphQL request failed:', error)
