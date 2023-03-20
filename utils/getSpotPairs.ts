@@ -16,7 +16,7 @@ async function getPairMetadata(
     tokenBInfo.address
   )
   const tokenAPrice = await getTokenPrice(chainId, tokenAInfo.address)
-  const tokenBPrice = await getTokenPrice(chainId, tokenAInfo.address)
+  const tokenBPrice = await getTokenPrice(chainId, tokenBInfo.address)
 
   return {
     ticker_id: tokenA + '_' + tokenB,
@@ -26,8 +26,9 @@ async function getPairMetadata(
     last_price: tokenAPrice.lastPrice,
     low: tokenAPrice.low,
     high: tokenAPrice.high,
-    base_volume: volume / (tokenAPrice.low + tokenAPrice.low) / 2,
-    target_volume: volume / (tokenBPrice.low + tokenBPrice.low) / 2,
+    base_volume: volume / ((tokenAPrice.high + tokenAPrice.low) / 2),
+    target_volume: volume / ((tokenBPrice.high + tokenBPrice.low) / 2),
+    volume_usd: volume,
   }
 }
 

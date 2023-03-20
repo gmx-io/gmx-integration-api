@@ -9,18 +9,6 @@ interface FastPrice {
   period: string
 }
 
-interface TokenPrices {
-  fastPrice: FastPrice
-  fastPrices: FastPrice[]
-  openInterestByToken: {
-    period: string
-    short: number
-    long: number
-    token: string
-    timestamp: number
-  }
-}
-
 const query = gql`
   query TokenPrices($id: ID!) {
     fastPrice(id: $id, period: "last") {
@@ -72,7 +60,7 @@ export async function getTokenPrice(chainId: number, tokenAddress: string) {
 async function getStablePrice(symbol: string) {
   const endpoint = SUBGRAPHS_API_URLS['chainlink']
   const priceInfo = await fetchGraphQL(endpoint, stableTokenQuery, {
-    id: CHAINLINK_CONTRACTS[symbol.toUpperCase()],
+    id: CHAINLINK_CONTRACTS[symbol],
   })
   const lastPrice = priceInfo.feeds[0].rounds[0].value / 1e8
   const last24Hours = priceInfo.feeds[0].rounds[0].submissions.map(

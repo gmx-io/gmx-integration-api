@@ -17,6 +17,7 @@ export const pricesUrls = {
 
 export const CHAINLINK_CONTRACTS: { [key: string]: string } = {
   USDC: '0x789190466e21a8b78b8027866cbbdc151542a26c',
+  'USDC.e': '0x789190466e21a8b78b8027866cbbdc151542a26c',
   USDT: '0x838a42bd3b727880ef27920acb637abeff2f73d4',
   DAI: '0xdec0a100ead1faa37407f0edc76033426cf90b82',
   FRAX: '0x61eb091ea16a32ea5b880d0b3d09d518c340d750',

@@ -14,4 +14,5 @@ export type Pair = {
   funding_rate?: number
   next_funding_rate?: number
   next_funding_timestamp?: number
+  volume_usd?: number
 }
