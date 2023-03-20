@@ -31,19 +31,19 @@ const query = gql`
   }
 `
 
-const stableTokenQuery = gql`
-  query StableTokenPrices($id: ID!) {
-    feeds(where: { contractAddress: $id }) {
-      name
-      rounds(orderBy: unixTimestamp, orderDirection: desc, first: 1) {
-        value
-        submissions {
-          value
-        }
-      }
-    }
-  }
-`
+// const stableTokenQuery = gql`
+//   query StableTokenPrices($id: ID!) {
+//     feeds(where: { contractAddress: $id }) {
+//       name
+//       rounds(orderBy: unixTimestamp, orderDirection: desc, first: 1) {
+//         value
+//         submissions {
+//           value
+//         }
+//       }
+//     }
+//   }
+// `
 
 export async function getTokenPrice(chainId: number, tokenAddress: string) {
   const token = getTokenByAddress(chainId, tokenAddress)
@@ -58,18 +58,18 @@ export async function getTokenPrice(chainId: number, tokenAddress: string) {
 }
 
 async function getStablePrice(symbol: string) {
-  const endpoint = SUBGRAPHS_API_URLS['chainlink']
-  const priceInfo = await fetchGraphQL(endpoint, stableTokenQuery, {
-    id: CHAINLINK_CONTRACTS[symbol],
-  })
-  const lastPrice = priceInfo.feeds[0].rounds[0].value / 1e8
-  const last24Hours = priceInfo.feeds[0].rounds[0].submissions.map(
-    (s: any) => s.value / 1e8
-  )
+  //   const endpoint = SUBGRAPHS_API_URLS['chainlink']
+  //   const priceInfo = await fetchGraphQL(endpoint, stableTokenQuery, {
+  //     id: CHAINLINK_CONTRACTS[symbol],
+  //   })
+  //   const lastPrice = priceInfo.feeds[0].rounds[0].value / 1e8
+  //   const last24Hours = priceInfo.feeds[0].rounds[0].submissions.map(
+  //     (s: any) => s.value / 1e8
+  //   )
   return {
-    lastPrice,
-    high: Math.max(...last24Hours),
-    low: Math.min(...last24Hours),
+    lastPrice: 1,
+    high: 1,
+    low: 1,
   }
 }
 
