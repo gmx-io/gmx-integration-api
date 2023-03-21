@@ -1,21 +1,20 @@
 import { gql } from 'graphql-request'
-import { CHAINLINK_CONTRACTS, SUBGRAPHS_API_URLS } from '../config/constants'
-import { getTokenByAddress } from '../config/tokens'
-import fetchGraphQL from '../lib/fetchGraphQL'
+import { currentPriceUrls } from '../config/constants'
+import { getNormalizedTokenSymbol, getTokenByAddress } from '../config/tokens'
+import { fetchUrl } from '../lib/fetchUrl'
 
-interface FastPrice {
-  value: number
-  token: string
-  period: string
-}
-
-const query = gql`
-  query TokenPrices($id: ID!) {
+const currentPriceQuery = gql`
+  query CurrentTokenPrice($id: ID!) {
     fastPrice(id: $id, period: "last") {
       value
       token
       period
     }
+  }
+`
+
+const priceHistoryQuery = gql`
+  query TokenPrices($id: ID!) {
     fastPrices(
       where: { period: "hourly", token: $id }
       first: 24
@@ -31,58 +30,70 @@ const query = gql`
   }
 `
 
-// const stableTokenQuery = gql`
-//   query StableTokenPrices($id: ID!) {
-//     feeds(where: { contractAddress: $id }) {
-//       name
-//       rounds(orderBy: unixTimestamp, orderDirection: desc, first: 1) {
-//         value
-//         submissions {
-//           value
-//         }
-//       }
-//     }
-//   }
-// `
+async function getHighAndLowPriceOfToken(
+  chainId: number,
+  tokenAddress: string
+) {
+  const token = getTokenByAddress(chainId, tokenAddress)
+  const symbol = getNormalizedTokenSymbol(token.symbol)
+  let data
+  try {
+    data = await fetchUrl(
+      `https://stats.gmx.io/api/candles/${symbol}?preferableChainId=${chainId}&period=1h&limit=24`
+    )
+  } catch (error) {
+    data = []
+  }
+
+  return {
+    max: Math.max(...data.prices.map((bar: { h: number }) => bar.h)),
+    min: Math.min(...data.prices.map((bar: { l: number }) => bar.l)),
+    lastUpdated: data.updatedAt,
+  }
+}
+
+async function getCurrentPriceOfToken(chainId: number, tokenAddress: string) {
+  try {
+    const endpoint = currentPriceUrls[chainId]
+    const currentPrices = await fetchUrl(endpoint)
+
+    if (!currentPrices) {
+      return undefined
+    }
+
+    const currentPricesLowerCase = Object.keys(currentPrices)
+      .filter(Boolean)
+      .reduce<{ [key: string]: number }>((acc, address: string) => {
+        acc[address.toLowerCase()] = currentPrices[address]
+        return acc
+      }, {})
+
+    return currentPricesLowerCase[tokenAddress.toLowerCase()] / 1e30
+  } catch (e) {
+    console.error(e)
+    return undefined
+  }
+}
 
 export async function getTokenPrice(chainId: number, tokenAddress: string) {
   const token = getTokenByAddress(chainId, tokenAddress)
+  if (token.isStable) {
+    return {
+      lastPrice: 1,
+      high: 1,
+      low: 1,
+    }
+  }
   try {
-    return token.isStable
-      ? await getStablePrice(token.symbol)
-      : await getNonStablePrice(chainId, tokenAddress)
+    const lastPrice = await getCurrentPriceOfToken(chainId, tokenAddress)
+    const { max, min } = await getHighAndLowPriceOfToken(chainId, tokenAddress)
+    return {
+      lastPrice,
+      high: max,
+      low: min,
+    }
   } catch (e) {
     console.error(e)
     return { lastPrice: 0, high: 0, low: 0 }
-  }
-}
-
-async function getStablePrice(symbol: string) {
-  //   const endpoint = SUBGRAPHS_API_URLS['chainlink']
-  //   const priceInfo = await fetchGraphQL(endpoint, stableTokenQuery, {
-  //     id: CHAINLINK_CONTRACTS[symbol],
-  //   })
-  //   const lastPrice = priceInfo.feeds[0].rounds[0].value / 1e8
-  //   const last24Hours = priceInfo.feeds[0].rounds[0].submissions.map(
-  //     (s: any) => s.value / 1e8
-  //   )
-  return {
-    lastPrice: 1,
-    high: 1,
-    low: 1,
-  }
-}
-
-async function getNonStablePrice(chainId: number, tokenAddress: string) {
-  const endpoint = SUBGRAPHS_API_URLS[chainId]
-  const priceInfo = await fetchGraphQL(endpoint, query, {
-    id: tokenAddress.toLowerCase(),
-  })
-  const lastPrice = priceInfo.fastPrice.value / 1e30
-  const last24Hours = priceInfo.fastPrices.map((p: FastPrice) => p.value / 1e30)
-  return {
-    lastPrice,
-    high: Math.max(...last24Hours),
-    low: Math.min(...last24Hours),
   }
 }

@@ -10,7 +10,7 @@ export const SUBGRAPHS_API_URLS: { [key: number | string]: string } = {
   chainlink: 'https://api.thegraph.com/subgraphs/name/deividask/chainlink',
 }
 
-export const pricesUrls = {
+export const currentPriceUrls: { [key: number]: string } = {
   [ARBITRUM]: 'https://gmx-server-mainnet.uw.r.appspot.com/prices',
   [AVALANCHE]: 'https://gmx-avax-server.uc.r.appspot.com/prices',
 }

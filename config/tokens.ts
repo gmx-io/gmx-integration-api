@@ -185,3 +185,12 @@ export function getSwapPairs(chainId: number) {
   }
   return uniquePairs
 }
+
+export function getNormalizedTokenSymbol(tokenSymbol: string) {
+  if (['WBTC', 'WETH', 'WAVAX'].includes(tokenSymbol)) {
+    return tokenSymbol.substr(1)
+  } else if (tokenSymbol === 'BTC.b') {
+    return 'BTC'
+  }
+  return tokenSymbol
+}
