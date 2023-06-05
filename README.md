@@ -9,23 +9,6 @@ This API provides integration for multiple chains that GMX is active on.
 - Arbitrum integration: [https://gmx-integration-cg.vercel.app/api/arbitrum/pairs](https://gmx-integration-cg.vercel.app/api/arbitrum/pairs)
 - Avalanche integration: [https://gmx-integration-cg.vercel.app/api/avalanche/pairs](https://gmx-integration-cg.vercel.app/api/avalanche/pairs)
 
-## How to Use
-
-To use this project, follow the steps below:
-
-1. Install the dependencies:
-
-```bash
-yarn
-```
-
-2. Start the development server:
-
-```bash
-yarn dev
-```
-
-## API Specs
 
 The API provides information about trading pairs. Each pair object contains the following information:
 
@@ -46,3 +29,20 @@ The API provides information about trading pairs. Each pair object contains the 
 ```
 
 The `product_type` can be either `Spot` or `Perpetual`.
+
+## How to Use
+
+To use this project, follow the steps below:
+
+1. Install the dependencies:
+
+```bash
+yarn
+```
+
+2. Start the development server:
+
+```bash
+yarn dev
+```
+
