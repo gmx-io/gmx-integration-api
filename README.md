@@ -1,88 +1,48 @@
----
-name: CORS in Edge Functions
-slug: edge-functions-cors
-description: Handle CORS at the edge.
-framework: Next.js
-useCase:
-  - Edge Functions
-  - Documentation
-css: Tailwind
-deployUrl: https://vercel.com/new/clone?repository-url=https://github.com/vercel/examples/tree/main/edge-functions/cors&project-name=cors&repository-name=cors
-demoUrl: https://edge-functions-cors.vercel.app/api/hello
-relatedTemplates:
-  - cookies
----
+# Getting Started
 
-# CORS Example
+To set up this project, you can use [create-next-app](https://nextjs.org/docs/pages/api-reference/create-next-app).
 
-Below is the code from `pages/api/hello.ts`:
+## GMX Integration API
 
-```ts
-import { NextRequest } from 'next/server'
-import cors from '../../lib/cors'
+This API provides integration for multiple chains that GMX is active on.
 
-export const config = {
-  runtime: 'edge',
+- Arbitrum integration: [https://gmx-integration-cg.vercel.app/api/arbitrum/pairs](https://gmx-integration-cg.vercel.app/api/arbitrum/pairs)
+- Avalanche integration: [https://gmx-integration-cg.vercel.app/api/avalanche/pairs](https://gmx-integration-cg.vercel.app/api/avalanche/pairs)
+
+
+The API provides information about trading pairs. Each pair object contains the following information:
+
+```json
+{
+  "ticker_id": "ETH_USD",
+  "base_currency": "ETH",
+  "target_currency": "USD",
+  "product_type": "Perpetual",
+  "last_price": 1868.5210971,
+  "low": 1868.32,
+  "high": 1914.118,
+  "base_volume": 18773.171814193855,
+  "target_volume": 35504179.22526789,
+  "open_interest": 115411178.92925486
 }
 
-export default async function handler(req: NextRequest) {
-  // `cors` also takes care of handling OPTIONS requests
-  return cors(
-    req,
-    new Response(JSON.stringify({ message: 'Hello World!' }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    })
-  )
-}
 ```
 
-Test it out with:
-
-```bash
-curl -i -X OPTIONS -H 'origin: https://vercel.com' https://edge-functions-cors.vercel.sh/api/hello
-```
-
-## Demo
-
-https://edge-functions-cors.vercel.app/api/hello
+The `product_type` can be either `Spot` or `Perpetual`.
 
 ## How to Use
 
-You can choose from one of the following two methods to use this repository:
+To use this project, follow the steps below:
 
-### One-Click Deploy
-
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=vercel-examples):
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/vercel/examples/tree/main/edge-functions/cors&project-name=cors&repository-name=cors)
-
-### Clone and Deploy
-
-Download this repository via git:
+1. Install the dependencies:
 
 ```bash
-git clone https://github.com/vercel/examples.git
-```
-
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
-
-```bash
-npx create-next-app --example https://github.com/vercel/examples/tree/main/edge-functions/cors cors
-# or
-yarn create next-app --example https://github.com/vercel/examples/tree/main/edge-functions/cors cors
-```
-
-Next, run Next.js in development mode:
-
-```bash
-npm install
-npm run dev
-
-# or
-
 yarn
+```
+
+2. Start the development server:
+
+```bash
 yarn dev
 ```
 
-Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=edge-middleware-eap) ([Documentation](https://nextjs.org/docs/deployment)).
