@@ -23,7 +23,10 @@ async function getPairMetadata(
     base_currency: tokenA,
     target_currency: tokenB,
     product_type: 'Spot',
-    last_price: tokenAPrice.lastPrice,
+    last_price:
+      tokenAPrice.lastPrice &&
+      tokenBPrice.lastPrice &&
+      tokenAPrice.lastPrice / tokenBPrice.lastPrice,
     low: tokenAPrice.low,
     high: tokenAPrice.high,
     base_volume: volume / ((tokenAPrice.high + tokenAPrice.low) / 2),
