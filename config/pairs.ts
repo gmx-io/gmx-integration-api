@@ -2,16 +2,13 @@ type Pair = {
   ticker_id: string
   base_currency: string
   target_currency: string
+  product_type: 'Perpetual' | 'Spot'
   last_price: number
+  high: number
+  low: number
   base_volume: number
   target_volume: number
-  product_type: string
-  open_interest: number
-  index_price: number
-  index_name: string
-  bid?: number
-  ask?: number
-  high?: number
-  low?: number
+  volume_usd: number
+  open_interest?: number
 }
 export const PAIRS: Pair[] = []
