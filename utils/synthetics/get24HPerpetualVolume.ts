@@ -1,6 +1,6 @@
+import { SYNTHETICS_SUBGRAPHS } from '@/config/synthetics'
+import fetchGraphQL from '@/lib/fetchGraphQL'
 import { gql } from 'graphql-request'
-import { SYNTHETICS_SUBGRAPHS } from '../../config/synthetics'
-import fetchGraphQL from '../../lib/fetchGraphQL'
 
 type PerpVolumeInfo = {
   indexToken: string

@@ -1,13 +1,11 @@
+import { ARBITRUM } from '@/config/constants'
+import { getPerpetualMetadata } from '@/utils/synthetics/getPerpetualMetadata'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { ARBITRUM } from '../../../../config/constants'
-import { getPerpetualMetadata } from '../../../../utils/synthetics/getPerpetualMetadata'
 
-async function handleRequest(req: NextApiRequest, res: NextApiResponse) {
+async function handleRequest(_req: NextApiRequest, res: NextApiResponse) {
   const currentNetwork = ARBITRUM
   try {
     const perpetualPairs = await getPerpetualMetadata(currentNetwork)
-
-    // @ts-ignore
     res.status(200).json(perpetualPairs)
   } catch (error) {
     console.error('GraphQL request failed:', error)

@@ -180,6 +180,29 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       address: '0xa9004A5421372E1D83fB1f85b0fc986c912f91f3',
       decimals: 18,
     },
+    {
+      name: 'Cosmos',
+      symbol: 'ATOM',
+      assetSymbol: 'ATOM',
+      address: '0x7D7F1765aCbaF847b9A1f7137FE8Ed4931FbfEbA',
+      decimals: 6,
+      isSynthetic: true,
+    },
+    {
+      name: 'Near',
+      symbol: 'NEAR',
+      assetSymbol: 'NEAR',
+      address: '0x1FF7F3EFBb9481Cbd7db4F932cBCD4467144237C',
+      decimals: 24,
+      isSynthetic: true,
+    },
+    {
+      name: 'Aave',
+      symbol: 'AAVE',
+      assetSymbol: 'AAVE',
+      address: '0xba5DdD1f9d7F570dc94a51479a000E3BCE967196',
+      decimals: 18,
+    },
   ],
   [AVALANCHE]: [
     {
