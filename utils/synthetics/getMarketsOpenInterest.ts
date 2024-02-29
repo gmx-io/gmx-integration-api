@@ -1,7 +1,7 @@
-import { getDataStoreContract } from '../../config/constants'
-import { getClient } from '../../lib/client'
-import { openInterestKey } from '../../lib/getKeys'
+import { getDataStoreContract } from '@/config/constants'
+import { getClient } from '@/lib/client'
 import { getMarketsInfo } from './getMarketsInfo'
+import { openInterestKey } from '@/lib/getKeys'
 
 const USD_DIVISOR = BigInt(Math.pow(10, 30))
 

@@ -26,7 +26,7 @@ export type MarketInfo = {
   indexTokenInfo?: Token
   longTokenInfo?: Token
   shortTokenInfo?: Token
-  type: 'spot' | 'perpetual'
+  type: 'Spot' | 'Perpetual'
 }
 
 export async function getMarketsInfo(chainId: number) {
@@ -47,7 +47,7 @@ export async function getMarketsInfo(chainId: number) {
         indexTokenInfo,
         longTokenInfo,
         shortTokenInfo,
-        type: isSpotMarket ? 'spot' : 'perpetual',
+        type: isSpotMarket ? 'Spot' : 'Perpetual',
       }
     })
   } catch (e) {

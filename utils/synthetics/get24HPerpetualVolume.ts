@@ -2,10 +2,14 @@ import { SYNTHETICS_SUBGRAPHS } from '@/config/synthetics'
 import fetchGraphQL from '@/lib/fetchGraphQL'
 import { gql } from 'graphql-request'
 
+const USD_VOLUME_DIVISOR = 1e30
+
 type PerpVolumeInfo = {
   indexToken: string
   volumeUsd: string
 }
+
+type AccumulatedVolumes = { [indexToken: string]: number }
 
 const query = gql`
   query Swap24HVolume($lastTimestamp: Int!) {
@@ -21,30 +25,27 @@ const query = gql`
   }
 `
 
-export async function get24HPerpetualVolume(chainId: number) {
+export async function get24HPerpetualVolume(
+  chainId: number
+): Promise<AccumulatedVolumes | null> {
   const endpoint = SYNTHETICS_SUBGRAPHS[chainId]
-  const lastPeriodFor24Hours =
+  const timestamp24hAgo =
     Math.floor(Date.now() / 1000 / 3600) * 3600 - 60 * 60 * 24
   try {
     const { positionVolumeInfos } = await fetchGraphQL<{
       positionVolumeInfos: PerpVolumeInfo[]
-    }>(endpoint, query, { lastTimestamp: lastPeriodFor24Hours })
+    }>(endpoint, query, { lastTimestamp: timestamp24hAgo })
     const accumulatedVolumes = positionVolumeInfos.reduce(
-      (acc, { indexToken, volumeUsd }) => {
-        const volume = Number(volumeUsd) / 1e30
-        if (acc[indexToken]) {
-          acc[indexToken] += volume
-        } else {
-          acc[indexToken] = volume
-        }
+      (acc: AccumulatedVolumes, { indexToken, volumeUsd }) => {
+        const volume = Number(volumeUsd) / USD_VOLUME_DIVISOR
+        acc[indexToken] = (acc[indexToken] || 0) + volume
         return acc
       },
-      {} as { [key: string]: number }
+      {}
     )
-
     return accumulatedVolumes
   } catch (e) {
     console.error(e)
-    return null
+    throw new Error('Failed to fetch 24H perpetual volume')
   }
 }

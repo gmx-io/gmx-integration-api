@@ -1,5 +1,5 @@
-import { ORACLE_KEEPER_URLS } from '../../config/synthetics'
-import { fetchUrl } from '../../lib/fetchUrl'
+import { ORACLE_KEEPER_URLS } from '@/config/synthetics'
+import { fetchUrl } from '@/lib/fetchUrl'
 
 type PriceInfo = {
   tokenSymbol: string
@@ -10,8 +10,8 @@ type PriceInfo = {
 }
 
 export async function getTokensPrice(chainId: number): Promise<PriceInfo[]> {
-  const url = ORACLE_KEEPER_URLS[chainId]
-  const price24hUrl = `${url}/prices/24h`
-  const data = await fetchUrl(price24hUrl)
-  return data
+  const baseUrl = ORACLE_KEEPER_URLS[chainId]
+  const dailyPriceUrl = `${baseUrl}/prices/24h`
+  const pricesData: PriceInfo[] = await fetchUrl(dailyPriceUrl)
+  return pricesData
 }

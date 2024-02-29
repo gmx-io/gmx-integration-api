@@ -1,4 +1,4 @@
-import { isSameStr } from '../../lib'
+import { isSameStr } from '@/lib/index'
 import { get24HPerpetualVolume } from './get24HPerpetualVolume'
 import { getMarketsOpenInterest } from './getMarketsOpenInterest'
 import { getPerpetualMarkets } from './getPerpetualMarkets'
