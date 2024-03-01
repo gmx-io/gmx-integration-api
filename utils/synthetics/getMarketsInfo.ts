@@ -23,13 +23,15 @@ export type MarketInfo = {
   marketToken: string
   marketTokensSupply: string
   shortToken: string
-  indexTokenInfo?: Token
-  longTokenInfo?: Token
-  shortTokenInfo?: Token
+  indexTokenInfo: Token
+  longTokenInfo: Token
+  shortTokenInfo: Token
   type: 'Spot' | 'Perpetual'
 }
 
-export async function getMarketsInfo(chainId: number) {
+export async function getMarketsInfo(
+  chainId: number
+): Promise<MarketInfo[] | null> {
   const endpoint = SYNTHETICS_SUBGRAPHS[chainId]
   try {
     const { marketInfos } = await fetchGraphQL<{ marketInfos: MarketInfo[] }>(
@@ -37,19 +39,25 @@ export async function getMarketsInfo(chainId: number) {
       query
     )
 
-    return marketInfos.map((marketInfo) => {
-      const indexTokenInfo = getToken(chainId, marketInfo.indexToken)
-      const longTokenInfo = getToken(chainId, marketInfo.longToken)
-      const shortTokenInfo = getToken(chainId, marketInfo.shortToken)
-      const isSpotMarket = marketInfo.indexToken === AddressZero
-      return {
-        ...marketInfo,
-        indexTokenInfo,
-        longTokenInfo,
-        shortTokenInfo,
-        type: isSpotMarket ? 'Spot' : 'Perpetual',
-      }
-    })
+    return marketInfos
+      .map((marketInfo) => {
+        const indexTokenInfo = getToken(chainId, marketInfo.indexToken)
+        const longTokenInfo = getToken(chainId, marketInfo.longToken)
+        const shortTokenInfo = getToken(chainId, marketInfo.shortToken)
+        const isSpotMarket = marketInfo.indexToken === AddressZero
+
+        if (!indexTokenInfo || !longTokenInfo || !shortTokenInfo) {
+          return null
+        }
+        return {
+          ...marketInfo,
+          indexTokenInfo,
+          longTokenInfo,
+          shortTokenInfo,
+          type: isSpotMarket ? 'Spot' : 'Perpetual',
+        }
+      })
+      .filter(Boolean) as MarketInfo[]
   } catch (e) {
     console.error(e)
     return null

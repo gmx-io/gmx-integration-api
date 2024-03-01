@@ -10,5 +10,7 @@ type Pair = {
   target_volume: number
   volume_usd: number
   open_interest?: number
+  long_open_interest?: number
+  short_open_interest?: number
 }
 export const PAIRS: Pair[] = []

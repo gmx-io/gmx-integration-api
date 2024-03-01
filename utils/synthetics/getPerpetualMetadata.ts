@@ -3,8 +3,11 @@ import { get24HPerpetualVolume } from './get24HPerpetualVolume'
 import { getMarketsOpenInterest } from './getMarketsOpenInterest'
 import { getPerpetualMarkets } from './getPerpetualMarkets'
 import { getTokensPrice } from './getTokensPrice'
+import { Pair } from '../types'
 
-export async function getPerpetualMetadata(chainId: number) {
+export async function getPerpetualMetadata(
+  chainId: number
+): Promise<Pair[] | null> {
   const perpMarkets = await getPerpetualMarkets(chainId)
   const prices = await getTokensPrice(chainId)
   const volumeInfo = await get24HPerpetualVolume(chainId)
@@ -15,8 +18,6 @@ export async function getPerpetualMetadata(chainId: number) {
   return perpMarkets
     .map((market) => {
       const { indexTokenInfo, indexToken, marketToken } = market
-
-      if (!indexTokenInfo) return null
       const openInterest = openInterestByMarket[marketToken]
       const tokenSymbol = indexTokenInfo.baseSymbol ?? indexTokenInfo.symbol
       const priceInfo = prices.find((price) =>

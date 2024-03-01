@@ -50,17 +50,17 @@ export async function get24HSwapVolume(chainId: number) {
     )
 
     const combinedVolumes = swapPairs?.reduce(
-      (acc, { pairAddress, token0, token1 }) => {
-        const key = `${token0}-${token1}`
-        const reverseKey = `${token1}-${token0}`
+      (acc, { longToken, shortToken }) => {
+        const key = `${longToken}-${shortToken}`
+        const reverseKey = `${shortToken}-${longToken}`
+
         const volume =
           accumulatedVolumes[key] || accumulatedVolumes[reverseKey] || 0
-        acc[pairAddress] = (acc[pairAddress] || 0) + volume
+        acc[key] = (acc[key] || 0) + volume
         return acc
       },
       {} as { [pairAddress: string]: number }
     )
-
     return combinedVolumes
   } catch (e) {
     console.error(e)
