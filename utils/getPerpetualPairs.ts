@@ -1,7 +1,7 @@
+import { Pair } from '@/config/pairs'
 import { getPerpTokens, getTokenBySymbol } from '../config/tokens'
 import { getTokenOpenInterest } from './getTokenOpenInterest'
 import { getTokenPrice } from './prices'
-import { Pair } from './types'
 import { getLast24hVolume } from './volume'
 
 async function getPairMetadata(ticker: string, chainId: number) {
@@ -14,7 +14,7 @@ async function getPairMetadata(ticker: string, chainId: number) {
     base_currency: ticker,
     target_currency: 'USD',
     product_type: 'Perpetual',
-    last_price: lastPrice,
+    last_price: lastPrice ?? 0,
     low,
     high,
     base_volume: volumeLast24Hours / ((high + low) / 2),

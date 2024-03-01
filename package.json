@@ -9,18 +9,18 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "graphql": "^16.6.0",
-    "graphql-request": "^5.2.0",
+    "graphql": "16.6.0",
+    "graphql-request": "5.2.0",
     "next": "canary",
     "react": "latest",
     "react-dom": "latest",
-    "viem": "^2.7.16"
+    "viem": "2.7.16"
   },
   "devDependencies": {
     "@types/node": "^17.0.14",
     "@types/react": "latest",
     "eslint": "^8.9.0",
     "eslint-config-next": "canary",
-    "typescript": "4.5.5"
+    "typescript": "5.1"
   }
 }

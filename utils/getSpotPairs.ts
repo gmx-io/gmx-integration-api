@@ -1,7 +1,7 @@
+import { Pair } from '@/config/pairs'
 import { getSwapPairs, getTokenBySymbol } from '../config/tokens'
 import { getTokenPrice } from './prices'
 import { getLast24hSwapVolume } from './spotVolume'
-import { Pair } from './types'
 
 async function getPairMetadata(
   chainId: number,
@@ -17,16 +17,18 @@ async function getPairMetadata(
   )
   const tokenAPrice = await getTokenPrice(chainId, tokenAInfo.address)
   const tokenBPrice = await getTokenPrice(chainId, tokenBInfo.address)
+  const lastPrice =
+    (tokenAPrice.lastPrice &&
+      tokenBPrice.lastPrice &&
+      tokenAPrice.lastPrice / tokenBPrice.lastPrice) ??
+    0
 
   return {
     ticker_id: tokenA + '_' + tokenB,
     base_currency: tokenA,
     target_currency: tokenB,
     product_type: 'Spot',
-    last_price:
-      tokenAPrice.lastPrice &&
-      tokenBPrice.lastPrice &&
-      tokenAPrice.lastPrice / tokenBPrice.lastPrice,
+    last_price: lastPrice,
     low: tokenAPrice.low,
     high: tokenAPrice.high,
     base_volume: volume / ((tokenAPrice.high + tokenAPrice.low) / 2),
