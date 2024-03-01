@@ -5,7 +5,6 @@ import {
 import { getClient } from '@/lib/client'
 import { getPerpetualMarkets } from './getPerpetualMarkets'
 import { ContractFunctionParameters } from 'viem'
-import { getTokenPrice, getTokensPrice } from './getTokensPrice'
 import { getContractPrices } from './getContractPrices'
 
 type FundingRates = {
@@ -42,7 +41,7 @@ export async function getFundingRates(chainId: number) {
   if (!markets || !prices) return null
 
   const calls: ContractFunctionParameters[] = markets.map((market) => {
-    const allPrices = {
+    const tokensPrices = {
       indexTokenPrice: prices[market.indexToken],
       longTokenPrice: prices[market.longToken],
       shortTokenPrice: prices[market.shortToken],
@@ -50,7 +49,7 @@ export async function getFundingRates(chainId: number) {
     return {
       ...contract,
       functionName: 'getMarketInfo',
-      args: [dataStoreAddress, allPrices, market.marketToken],
+      args: [dataStoreAddress, tokensPrices, market.marketToken],
     }
   })
 

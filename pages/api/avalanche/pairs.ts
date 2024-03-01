@@ -1,7 +1,7 @@
+import { AVALANCHE } from '@/config/constants'
+import getPerpetualPairs from '@/utils/getPerpetualPairs'
+import getSpotPairs from '@/utils/getSpotPairs'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { AVALANCHE } from '../../../config/constants'
-import getPerpetualPairs from '../../../utils/getPerpetualPairs'
-import getSpotPairs from '../../../utils/getSpotPairs'
 
 async function handleRequest(req: NextApiRequest, res: NextApiResponse) {
   const currentNetwork = AVALANCHE

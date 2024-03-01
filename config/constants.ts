@@ -27,7 +27,7 @@ export const CONTRACTS: {
   },
   [AVALANCHE]: {
     DataStore: '0x2F0b22339414ADeD7D5F06f9D604c7fF5b2fe3f6',
-    SyntheticsReader: '0xf60becbba223EEA9495Da3f606753867eC10d139',
+    SyntheticsReader: '0x73BA021ACF4Bb6741E82690DdB821e7936050f8C',
   },
 }
 

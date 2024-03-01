@@ -14,6 +14,7 @@ export async function getPerpetualMetadata(
   const volumeInfo = await get24HPerpetualVolume(chainId)
   const openInterestByMarket = await getMarketsOpenInterest(chainId)
   const fundingRates = await getFundingRates(chainId)
+
   if (!perpMarkets || !prices || !volumeInfo || !openInterestByMarket)
     return null
 
