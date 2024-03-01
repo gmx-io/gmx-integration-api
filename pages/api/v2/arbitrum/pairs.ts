@@ -8,6 +8,7 @@ async function handleRequest(_req: NextApiRequest, res: NextApiResponse) {
   try {
     const perpetualPairs = await getPerpetualMetadata(currentNetwork)
     const spotPairs = await getSwapMetadata(currentNetwork)
+
     res.status(200).json(perpetualPairs?.concat(spotPairs ?? []))
   } catch (error) {
     console.error('GraphQL request failed:', error)

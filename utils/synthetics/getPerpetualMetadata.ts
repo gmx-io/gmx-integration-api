@@ -1,9 +1,10 @@
-import { isSameStr } from '@/lib/index'
+import { getFundingPerHour, isSameStr } from '@/lib/index'
 import { get24HPerpetualVolume } from './get24HPerpetualVolume'
 import { getMarketsOpenInterest } from './getMarketsOpenInterest'
 import { getPerpetualMarkets } from './getPerpetualMarkets'
 import { getTokensPrice } from './getTokensPrice'
-import { Pair } from '../types'
+import { Pair } from '@/config/pairs'
+import { getFundingRates } from './getFundingRates'
 
 export async function getPerpetualMetadata(
   chainId: number
@@ -12,13 +13,21 @@ export async function getPerpetualMetadata(
   const prices = await getTokensPrice(chainId)
   const volumeInfo = await get24HPerpetualVolume(chainId)
   const openInterestByMarket = await getMarketsOpenInterest(chainId)
+  const fundingRates = await getFundingRates(chainId)
   if (!perpMarkets || !prices || !volumeInfo || !openInterestByMarket)
     return null
+  console.table(fundingRates)
 
   return perpMarkets
     .map((market) => {
       const { indexTokenInfo, indexToken, marketToken } = market
       const openInterest = openInterestByMarket[marketToken]
+      const fundingRate = fundingRates?.[marketToken]
+      const fundingPerHour = getFundingPerHour(
+        fundingRate?.fundingFactorPerSecond,
+        fundingRate?.longsPayShorts
+      )
+
       const tokenSymbol = indexTokenInfo.baseSymbol ?? indexTokenInfo.symbol
       const priceInfo = prices.find((price) =>
         isSameStr(price.tokenSymbol, tokenSymbol)
@@ -37,6 +46,7 @@ export async function getPerpetualMetadata(
         open_interest: openInterest.openInterestUsd,
         long_open_interest: openInterest.longInterestUsd,
         short_open_interest: openInterest.shortInterestUsd,
+        funding_rate: fundingPerHour,
       }
     })
     .filter(Boolean)

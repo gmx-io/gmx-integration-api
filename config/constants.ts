@@ -1,5 +1,6 @@
 import { Abi, Address } from 'viem'
-import dataStore from './abis/dataStore.json'
+import DataStore from './abis/DataStore.json'
+import SyntheticsReader from './abis/SyntheticReader.json'
 export const AVALANCHE = 43114
 export const ARBITRUM = 42161
 export const AddressZero = '0x0000000000000000000000000000000000000000'
@@ -17,9 +18,17 @@ export const currentPriceUrls: { [key: number]: string } = {
   [AVALANCHE]: 'https://gmx-avax-server.uc.r.appspot.com/prices',
 }
 
-export const DATA_STORE_CONTRACTS: { [key: number]: Address } = {
-  [ARBITRUM]: '0xFD70de6b91282D8017aA4E741e9Ae325CAb992d8',
-  [AVALANCHE]: '0x2F0b22339414ADeD7D5F06f9D604c7fF5b2fe3f6',
+export const CONTRACTS: {
+  [key: number]: { [key: string]: string }
+} = {
+  [ARBITRUM]: {
+    DataStore: '0xFD70de6b91282D8017aA4E741e9Ae325CAb992d8',
+    SyntheticsReader: '0xf60becbba223EEA9495Da3f606753867eC10d139',
+  },
+  [AVALANCHE]: {
+    DataStore: '0x2F0b22339414ADeD7D5F06f9D604c7fF5b2fe3f6',
+    SyntheticsReader: '0xf60becbba223EEA9495Da3f606753867eC10d139',
+  },
 }
 
 export const CHAINLINK_CONTRACTS: { [key: string]: string } = {
@@ -31,9 +40,24 @@ export const CHAINLINK_CONTRACTS: { [key: string]: string } = {
 }
 
 export function getDataStoreContract(chainId: number) {
-  const contract = DATA_STORE_CONTRACTS[chainId]
+  const address = CONTRACTS[chainId].DataStore
   return {
-    address: contract,
-    abi: dataStore.abi as Abi,
+    address: address as Address,
+    abi: DataStore.abi as Abi,
   } as const
+}
+
+export function getSyntheticsReaderContract(chainId: number) {
+  const address = CONTRACTS[chainId].SyntheticsReader
+  return {
+    address: address as Address,
+    abi: SyntheticsReader.abi as Abi,
+  } as const
+}
+
+export function getContractAddress(chainId: number, contract: string) {
+  const address = CONTRACTS[chainId][contract]
+  if (!address) return
+
+  return address
 }

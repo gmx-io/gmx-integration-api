@@ -1,7 +1,7 @@
 import { isSameStr } from '@/lib/index'
 import { get24HSwapVolume } from './get24HSwapVolume'
 import { getSwapMarkets } from './getSwapMarkets'
-import { getTokensPrice } from './getTokensPrice'
+import { getStableTokenPrice, getTokensPrice } from './getTokensPrice'
 
 export async function getSwapMetadata(chainId: number) {
   const swapPairs = await getSwapMarkets(chainId)
@@ -14,12 +14,12 @@ export async function getSwapMetadata(chainId: number) {
     const volumeUsd = pairSwapVolume?.[pairAddress.toLowerCase()] ?? 0
     const longTokenSymbol = longTokenInfo.baseSymbol ?? longTokenInfo.symbol
     const shortTokenSymbol = shortTokenInfo.baseSymbol ?? shortTokenInfo.symbol
-    const longTokenPriceInfo = prices.find((price) =>
-      isSameStr(price.tokenSymbol, longTokenSymbol)
-    )
-    const shortTokenPriceInfo = prices.find((price) =>
-      isSameStr(price.tokenSymbol, shortTokenSymbol)
-    )
+    const longTokenPriceInfo = longTokenInfo?.isStable
+      ? getStableTokenPrice(longTokenSymbol)
+      : prices.find((price) => isSameStr(price.tokenSymbol, longTokenSymbol))
+    const shortTokenPriceInfo = shortTokenInfo?.isStable
+      ? getStableTokenPrice(shortTokenSymbol)
+      : prices.find((price) => isSameStr(price.tokenSymbol, shortTokenSymbol))
 
     const priceCalculation = (type: 'close' | 'high' | 'low') =>
       longTokenPriceInfo && shortTokenPriceInfo
@@ -35,7 +35,8 @@ export async function getSwapMetadata(chainId: number) {
       high: priceCalculation('high'),
       low: priceCalculation('low'),
       base_volume: volumeUsd / (longTokenPriceInfo?.close ?? 1),
-      target_volume: volumeUsd,
+      target_volume: volumeUsd / (shortTokenPriceInfo?.close ?? 1),
+      volume_usd: volumeUsd,
     }
   })
 }
