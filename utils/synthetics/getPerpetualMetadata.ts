@@ -16,7 +16,6 @@ export async function getPerpetualMetadata(
   const fundingRates = await getFundingRates(chainId)
   if (!perpMarkets || !prices || !volumeInfo || !openInterestByMarket)
     return null
-  console.table(fundingRates)
 
   return perpMarkets
     .map((market) => {

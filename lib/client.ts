@@ -2,7 +2,7 @@ import { Chain, createPublicClient, http } from 'viem'
 import { arbitrum, avalanche } from 'viem/chains'
 import { ARBITRUM, AVALANCHE } from '../config/constants'
 
-const NETWORK_CLIENT_MAP: Record<number, Chain> = {
+const NETWORK_CLIENT_MAP: Record<number, any> = {
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
 }

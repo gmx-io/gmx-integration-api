@@ -1,6 +1,6 @@
 import { Abi, Address } from 'viem'
-import DataStore from './abis/DataStore.json'
-import SyntheticsReader from './abis/SyntheticReader.json'
+import DataStore from '../abis/DataStore.json'
+import SyntheticsReader from '../abis/SyntheticReader.json'
 export const AVALANCHE = 43114
 export const ARBITRUM = 42161
 export const AddressZero = '0x0000000000000000000000000000000000000000'
