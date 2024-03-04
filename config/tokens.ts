@@ -1,4 +1,4 @@
-import { AddressZero, ARBITRUM, AVALANCHE } from './constants'
+import { ARBITRUM, AVALANCHE } from './constants'
 type Token = {
   name: string
   symbol: string
