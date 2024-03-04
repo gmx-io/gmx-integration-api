@@ -1,17 +1,17 @@
 import { getFundingPerHour, isSameStr } from '@/lib/index'
-import { get24HPerpetualVolume } from './get24HPerpetualVolume'
+import { getPerpVolumes } from './getPerpVolumes'
 import { getMarketsOpenInterest } from './getMarketsOpenInterest'
 import { getPerpetualMarkets } from './getPerpetualMarkets'
-import { getTokensPrice } from './getTokensPrice'
-import { Pair } from '@/config/pairs'
+import { getTokensPrice } from './getPrices'
+import { Pair } from '@/lib/types'
 import { getFundingRates } from './getFundingRates'
 
-export async function getPerpetualMetadata(
+export async function getPerpetualPairsInfo(
   chainId: number
 ): Promise<Pair[] | null> {
   const perpMarkets = await getPerpetualMarkets(chainId)
   const prices = await getTokensPrice(chainId)
-  const volumeInfo = await get24HPerpetualVolume(chainId)
+  const volumeInfo = await getPerpVolumes(chainId)
   const openInterestByMarket = await getMarketsOpenInterest(chainId)
   const fundingRates = await getFundingRates(chainId)
 

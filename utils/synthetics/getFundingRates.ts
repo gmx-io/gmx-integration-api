@@ -5,7 +5,7 @@ import {
 import { getClient } from '@/lib/client'
 import { getPerpetualMarkets } from './getPerpetualMarkets'
 import { ContractFunctionParameters } from 'viem'
-import { getContractPrices } from './getContractPrices'
+import { getContractPrices } from './getPrices'
 
 type FundingRates = {
   [key: string]: {

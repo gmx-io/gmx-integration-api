@@ -1,4 +1,4 @@
-import { Pair } from '@/config/pairs'
+import { Pair } from '@/lib/types'
 import { getSwapPairs, getTokenBySymbol } from '../config/tokens'
 import { getTokenPrice } from './prices'
 import { getLast24hSwapVolume } from './spotVolume'

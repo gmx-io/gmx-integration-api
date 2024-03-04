@@ -1,4 +1,4 @@
-import { Pair } from '@/config/pairs'
+import { Pair } from '@/lib/types'
 import { getPerpTokens, getTokenBySymbol } from '../config/tokens'
 import { getTokenOpenInterest } from './getTokenOpenInterest'
 import { getTokenPrice } from './prices'

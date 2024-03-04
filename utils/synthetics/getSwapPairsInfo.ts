@@ -1,9 +1,9 @@
 import { isSameStr } from '@/lib/index'
-import { get24HSwapVolume } from './get24HSwapVolume'
+import { get24HSwapVolume } from './getSwapVolumes'
 import { getSwapMarkets } from './getSwapMarkets'
 import { getStableTokenPrice, getTokensPrice } from './getTokensPrice'
 
-export async function getSwapMetadata(chainId: number) {
+export async function getSwapPairsInfo(chainId: number) {
   const swapPairs = await getSwapMarkets(chainId)
   const pairSwapVolume = await get24HSwapVolume(chainId)
   const prices = await getTokensPrice(chainId)

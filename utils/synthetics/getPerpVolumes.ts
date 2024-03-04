@@ -25,7 +25,7 @@ const query = gql`
   }
 `
 
-export async function get24HPerpetualVolume(
+export async function getPerpVolumes(
   chainId: number
 ): Promise<AccumulatedVolumes | null> {
   const endpoint = SYNTHETICS_SUBGRAPHS[chainId]
