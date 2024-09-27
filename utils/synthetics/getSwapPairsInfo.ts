@@ -4,9 +4,13 @@ import { getSwapMarkets } from './getSwapMarkets'
 import { getStableTokenPrice, getTokensPrice } from './getTokensPrice'
 
 export async function getSwapPairsInfo(chainId: number) {
-  const swapPairs = await getSwapMarkets(chainId)
-  const pairSwapVolume = await get24HSwapVolume(chainId)
-  const prices = await getTokensPrice(chainId)
+  const [swapPairs, pairSwapVolume, prices] = await Promise.all(
+    [
+      getSwapMarkets(chainId),
+      get24HSwapVolume(chainId),
+      getTokensPrice(chainId)
+    ]
+  )
 
   return swapPairs?.map((pair) => {
     const { longToken, shortToken, longTokenInfo, shortTokenInfo } = pair

@@ -9,11 +9,13 @@ import { getFundingRates } from './getFundingRates'
 export async function getPerpetualPairsInfo(
   chainId: number
 ): Promise<Pair[] | null> {
-  const perpMarkets = await getPerpetualMarkets(chainId)
-  const prices = await getTokensPrice(chainId)
-  const volumeInfo = await getPerpVolumes(chainId)
-  const openInterestByMarket = await getMarketsOpenInterest(chainId)
-  const fundingRates = await getFundingRates(chainId)
+  const [perpMarkets, prices, volumeInfo, openInterestByMarket, fundingRates] = await Promise.all([
+    getPerpetualMarkets(chainId),
+    getTokensPrice(chainId),
+    getPerpVolumes(chainId),
+    getMarketsOpenInterest(chainId),
+    getFundingRates(chainId)
+  ])
 
   if (!perpMarkets || !prices || !volumeInfo || !openInterestByMarket)
     return null
