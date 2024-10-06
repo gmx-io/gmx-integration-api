@@ -10,15 +10,15 @@ type PriceInfo = {
   close: number
 }
 
-export function getStableTokenPrice(tokenSymbol: string) {
-  return {
-    tokenSymbol,
-    high: 1,
-    low: 1,
-    open: 1,
-    close: 1,
-  }
-}
+// export function getStableTokenPrice(tokenSymbol: string) {
+//   return {
+//     tokenSymbol,
+//     high: 1,
+//     low: 1,
+//     open: 1,
+//     close: 1,
+//   }
+// }
 
 export async function getTokensPrice(chainId: number): Promise<PriceInfo[]> {
   const baseUrl = ORACLE_KEEPER_URLS[chainId]
