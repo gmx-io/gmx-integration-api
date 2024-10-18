@@ -1,7 +1,7 @@
 import { isSameStr } from '@/lib/index'
 import { get24HSwapVolume } from './getSwapVolumes'
 import { getSwapMarkets } from './getSwapMarkets'
-import { getStableTokenPrice, getTokensPrice } from './getTokensPrice'
+import { getTokensPrice } from './getTokensPrice'
 
 export async function getSwapPairsInfo(chainId: number) {
   const [swapPairs, pairSwapVolume, prices] = await Promise.all(
@@ -18,13 +18,8 @@ export async function getSwapPairsInfo(chainId: number) {
     const volumeUsd = pairSwapVolume?.[pairAddress.toLowerCase()] ?? 0
     const longTokenSymbol = longTokenInfo.baseSymbol ?? longTokenInfo.symbol
     const shortTokenSymbol = shortTokenInfo.baseSymbol ?? shortTokenInfo.symbol
-    const longTokenPriceInfo = longTokenInfo?.isStable
-      ? getStableTokenPrice(longTokenSymbol)
-      : prices.find((price) => isSameStr(price.tokenSymbol, longTokenSymbol))
-    const shortTokenPriceInfo = shortTokenInfo?.isStable
-      ? getStableTokenPrice(shortTokenSymbol)
-      : prices.find((price) => isSameStr(price.tokenSymbol, shortTokenSymbol))
-
+    const longTokenPriceInfo = prices.find((price) => isSameStr(price.tokenSymbol, longTokenSymbol))
+    const shortTokenPriceInfo =  prices.find((price) => isSameStr(price.tokenSymbol, shortTokenSymbol))
     const priceCalculation = (type: 'close' | 'high' | 'low') =>
       longTokenPriceInfo && shortTokenPriceInfo
         ? (longTokenPriceInfo[type] ?? 0) / (shortTokenPriceInfo[type] ?? 1)
