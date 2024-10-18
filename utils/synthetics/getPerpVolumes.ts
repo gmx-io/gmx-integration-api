@@ -16,8 +16,8 @@ const query = gql`
     positionVolumeInfos(
       orderBy: timestamp
       orderDirection: desc
-      where: { period: "1h", timestamp_gte: $lastTimestamp }
-      first: 10000
+      where: { period: "1d", timestamp_gte: $lastTimestamp }
+      first: 1000
     ) {
       indexToken
       volumeUsd
@@ -30,7 +30,7 @@ export async function getPerpVolumes(
 ): Promise<AccumulatedVolumes | null> {
   const endpoint = SYNTHETICS_SUBGRAPHS[chainId]
   const timestamp24hAgo =
-    Math.floor(Date.now() / 1000 / 3600) * 3600 - 60 * 60 * 24
+    Math.floor(Date.now() / 1000 / 3600) * 3600 - 86400
   try {
     const { positionVolumeInfos } = await fetchGraphQL<{
       positionVolumeInfos: PerpVolumeInfo[]
