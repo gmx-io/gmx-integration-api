@@ -6,6 +6,7 @@ export const ORACLE_KEEPER_URLS: { [key: number]: string } = {
 }
 
 export const AddressZero = '0x0000000000000000000000000000000000000000'
+export const MAX_PNL_FACTOR_FOR_TRADERS  = '0xab15365d3aa743e766355e2557c230d8f943e195dc84d9b2b05928a07b635ee1'
 
 export const SYNTHETICS_SUBGRAPHS: { [key: number]: string } = {
   [ARBITRUM]:

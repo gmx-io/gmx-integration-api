@@ -2,8 +2,8 @@ import { getContractAddress, getSyntheticsReaderContract } from '@/config/consta
 import { getClient } from '@/lib/client'
 import { getMarketsInfo } from './getMarketsInfo'
 import { getContractPrices } from './getPrices'
-
-const USD_DIVISOR = BigInt(Math.pow(10, 30))
+import { AddressZero, MAX_PNL_FACTOR_FOR_TRADERS } from '@/config/synthetics'
+const USD_DIVISOR = 10n ** 30n
 
 type MarketsLiquidityInfo = {
   tokenPrice: number,
@@ -42,7 +42,7 @@ export async function getMarketsLiquidity(
 
   const callsByMarket = markets.reduce<Record<string, any>>((acc, market) => {
     const longTokenPrice = prices[market.longToken];
-    const indexTokenPrice = market.indexToken === "0x0000000000000000000000000000000000000000" ? longTokenPrice : prices[market.indexToken];
+    const indexTokenPrice = market.indexToken === AddressZero ? longTokenPrice : prices[market.indexToken];
     const shortTokenPrice = prices[market.shortToken];
     const marketTuple = {
       marketToken: market.marketToken,
@@ -59,7 +59,7 @@ export async function getMarketsLiquidity(
         indexTokenPrice,
         longTokenPrice,
         shortTokenPrice,
-        '0xab15365d3aa743e766355e2557c230d8f943e195dc84d9b2b05928a07b635ee1',
+        MAX_PNL_FACTOR_FOR_TRADERS,
         true
       ]
     }]
