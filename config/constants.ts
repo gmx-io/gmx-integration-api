@@ -9,7 +9,7 @@ export const SUBGRAPHS_API_URLS: { [key: number | string]: string } = {
   [ARBITRUM]:
     'https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-stats/api',
   [AVALANCHE]:
-    'https://api.thegraph.com/subgraphs/name/vipineth/gmx-stats-avax',
+    'https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-stats/api',
   chainlink: 'https://api.thegraph.com/subgraphs/name/deividask/chainlink',
 }
 

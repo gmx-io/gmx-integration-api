@@ -3,7 +3,7 @@ import { getClient } from '@/lib/client'
 import { getMarketsInfo } from './getMarketsInfo'
 import { openInterestKey } from '@/lib/getKeys'
 
-const USD_DIVISOR = BigInt(Math.pow(10, 30))
+const USD_DIVISOR = 10n ** 30n
 
 type MarketInterestInfo = {
   longInterestUsd: number

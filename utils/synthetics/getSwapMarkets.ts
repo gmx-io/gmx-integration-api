@@ -1,8 +1,11 @@
 import { MarketInfo, getMarketsInfo } from './getMarketsInfo'
 
 export async function getSwapMarkets(chainId: number) {
-  const marketInfos = await getMarketsInfo(chainId)
+  let marketInfos = await getMarketsInfo(chainId)
   if (!marketInfos) return
+
+  // To remove single token GM pools.
+  marketInfos = marketInfos.filter((market) => market.longToken !== market.shortToken);
 
   const uniqueMarketsMap = new Map<string, MarketInfo>()
   marketInfos.forEach((market) => {

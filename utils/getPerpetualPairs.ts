@@ -6,9 +6,12 @@ import { getLast24hVolume } from './volume'
 
 async function getPairMetadata(ticker: string, chainId: number) {
   const token = getTokenBySymbol(chainId, ticker)
-  const openInterest = await getTokenOpenInterest(chainId, token.address)
-  const { lastPrice, high, low } = await getTokenPrice(chainId, token.address)
-  const volumeLast24Hours = await getLast24hVolume(chainId, token.address)
+  const [openInterest, { lastPrice, high, low }, volumeLast24Hours] = await Promise.all([
+    getTokenOpenInterest(chainId, token.address),
+    getTokenPrice(chainId, token.address),
+    getLast24hVolume(chainId, token.address)
+  ])
+  
   return {
     ticker_id: ticker + '_USD',
     base_currency: ticker,
