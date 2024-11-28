@@ -4,9 +4,9 @@ export const AddressZero = '0x0000000000000000000000000000000000000000'
 
 export const SUBGRAPHS_API_URLS: { [key: number | string]: string } = {
   [ARBITRUM]:
-    'https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-arbitrum-stats/api',
+    'https://subgraph.satsuma-prod.com/9d997f2f923e/gmx/gmx-arbitrum-stats/api',
   [AVALANCHE]:
-    'https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/gmx-avalanche-stats/api',
+    'https://subgraph.satsuma-prod.com/9d997f2f923e/gmx/gmx-avalanche-stats/api',
   chainlink: 'https://api.thegraph.com/subgraphs/name/deividask/chainlink',
 }
 
