@@ -6,7 +6,7 @@
       "@/utils/*": ["utils/*"],
       "@/lib/*": ["lib/*"]
     },
-    "target": "es5",
+    "target": "ES2023",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
