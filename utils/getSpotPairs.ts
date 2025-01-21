@@ -41,7 +41,7 @@ async function getPairMetadata(
 export default async function getSpotPairs(chainId: number): Promise<Pair[]> {
   const pairs = getSwapPairs(chainId)
   return Promise.all(
-    pairs.map(async (pair) => {
+    pairs.map((pair) => {
       const [tokenA, tokenB] = pair
       return getPairMetadata(chainId, tokenA, tokenB)
     })
