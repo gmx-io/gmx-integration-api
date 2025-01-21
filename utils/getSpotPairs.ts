@@ -10,13 +10,14 @@ async function getPairMetadata(
 ) {
   const tokenAInfo = getTokenBySymbol(chainId, tokenA)
   const tokenBInfo = getTokenBySymbol(chainId, tokenB)
-  const volume = await getLast24hSwapVolume(
-    chainId,
-    tokenAInfo.address,
-    tokenBInfo.address
-  )
-  const tokenAPrice = await getTokenPrice(chainId, tokenAInfo.address)
-  const tokenBPrice = await getTokenPrice(chainId, tokenBInfo.address)
+  
+  const [volume, tokenAPrice, tokenBPrice] = await Promise.all([
+    getLast24hSwapVolume(chainId, tokenAInfo.address, tokenBInfo.address),
+    getTokenPrice(chainId, tokenAInfo.address),
+    getTokenPrice(chainId, tokenBInfo.address)
+
+  ])
+  
   const lastPrice =
     (tokenAPrice.lastPrice &&
       tokenBPrice.lastPrice &&

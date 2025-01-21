@@ -10,7 +10,8 @@ import { getContractPrices } from './getPrices'
 type FundingRates = {
   [key: string]: {
     longsPayShorts: boolean
-    fundingFactorPerSecond: bigint
+    fundingFactorPerSecond: bigint,
+    nextSavedFundingFactorPerSecond: bigint
   }
 }
 
@@ -23,7 +24,8 @@ type MarketResult = {
   }
   nextFunding: {
     longsPayShorts: boolean
-    fundingFactorPerSecond: bigint
+    fundingFactorPerSecond: bigint,
+    nextSavedFundingFactorPerSecond: bigint
   }
 }
 
@@ -63,6 +65,7 @@ export async function getFundingRates(chainId: number) {
         acc[result.market.marketToken?.toLowerCase()] = {
           longsPayShorts: result.nextFunding.longsPayShorts,
           fundingFactorPerSecond: result.nextFunding.fundingFactorPerSecond,
+          nextSavedFundingFactorPerSecond: result.nextFunding.nextSavedFundingFactorPerSecond,
         }
       }
       return acc
