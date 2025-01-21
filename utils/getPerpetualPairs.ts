@@ -31,9 +31,8 @@ export default async function getPerpetualPairs(
 ): Promise<Pair[]> {
   const tokens = getPerpTokens(chainId)
   return Promise.all(
-    tokens.map(async (token) => {
-      const pair = await getPairMetadata(token.symbol, chainId)
-      return pair
+    tokens.map((token) => {
+      return getPairMetadata(token.symbol, chainId)
     })
   )
 }

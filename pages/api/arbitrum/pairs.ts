@@ -6,8 +6,10 @@ import getSpotPairs from '../../../utils/getSpotPairs'
 async function handleRequest(req: NextApiRequest, res: NextApiResponse) {
   const currentNetwork = ARBITRUM
   try {
-    const perpetualPairs = await getPerpetualPairs(currentNetwork)
-    const spotPairs = await getSpotPairs(currentNetwork)
+    const [perpetualPairs, spotPairs] = await Promise.all([
+      getPerpetualPairs(currentNetwork),
+      getSpotPairs(currentNetwork),
+    ])
 
     res.status(200).json(perpetualPairs.concat(spotPairs))
   } catch (error) {

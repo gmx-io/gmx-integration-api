@@ -6,8 +6,10 @@ import { NextApiRequest, NextApiResponse } from 'next'
 async function handleRequest(_req: NextApiRequest, res: NextApiResponse) {
   const currentNetwork = AVALANCHE
   try {
-    const perpetualPairs = await getPerpetualPairsInfo(currentNetwork)
-    const spotPairs = await getSwapPairsInfo(currentNetwork)
+    const [perpetualPairs, spotPairs] = await Promise.all([
+      getPerpetualPairsInfo(currentNetwork),
+      getSwapPairsInfo(currentNetwork),
+    ])
     res.status(200).json(perpetualPairs?.concat(spotPairs ?? []))
   } catch (error) {
     console.error('GraphQL request failed:', error)

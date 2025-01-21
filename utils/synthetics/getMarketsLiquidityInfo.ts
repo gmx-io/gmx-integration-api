@@ -33,8 +33,10 @@ export async function getMarketsLiquidity(
   const datastoreContract = getContractAddress(chainId, 'DataStore')
   const client = getClient(chainId)
   const readerContract = getSyntheticsReaderContract(chainId)
-  const markets = await getMarketsInfo(chainId)
-  const prices = await getContractPrices(chainId)
+  const [markets, prices] = await Promise.all([
+    getMarketsInfo(chainId),
+    getContractPrices(chainId),
+  ])
 
   if (!markets || !readerContract || !datastoreContract || !prices) {
     return

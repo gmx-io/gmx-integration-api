@@ -43,7 +43,7 @@ export default async function getSpotPairs(chainId: number): Promise<Pair[]> {
   return Promise.all(
     pairs.map(async (pair) => {
       const [tokenA, tokenB] = pair
-      return await getPairMetadata(chainId, tokenA, tokenB)
+      return getPairMetadata(chainId, tokenA, tokenB)
     })
   )
 }

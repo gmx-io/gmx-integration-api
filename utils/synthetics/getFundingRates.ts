@@ -37,8 +37,10 @@ export async function getFundingRates(chainId: number) {
   const dataStoreAddress = getContractAddress(chainId, 'DataStore')
   const client = getClient(chainId)
   const contract = getSyntheticsReaderContract(chainId)
-  const markets = await getPerpetualMarkets(chainId)
-  const prices = await getContractPrices(chainId)
+  const [markets, prices] = await Promise.all([
+    getPerpetualMarkets(chainId),
+    getContractPrices(chainId),
+  ])
 
   if (!markets || !prices) return null
 

@@ -77,16 +77,18 @@ async function getCurrentPriceOfToken(chainId: number, tokenAddress: string) {
 
 export async function getTokenPrice(chainId: number, tokenAddress: string) {
   const token = getTokenByAddress(chainId, tokenAddress)
-  // if (token.isStable) {
-  //   return {
-  //     lastPrice: 1,
-  //     high: 1,
-  //     low: 1,
-  //   }
-  // }
+  if (token.isStable) {
+    return {
+      lastPrice: 1,
+      high: 1,
+      low: 1,
+    }
+  }
   try {
-    const lastPrice = await getCurrentPriceOfToken(chainId, tokenAddress)
-    const { max, min } = await getHighAndLowPriceOfToken(chainId, tokenAddress)
+    const [lastPrice, { max, min }] = await Promise.all([
+      getCurrentPriceOfToken(chainId, tokenAddress),
+      getHighAndLowPriceOfToken(chainId, tokenAddress),
+    ])
     return {
       lastPrice,
       high: max,
