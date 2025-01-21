@@ -3,33 +3,6 @@ import { currentPriceUrls } from '../config/constants'
 import { getNormalizedTokenSymbol, getTokenByAddress } from '../config/tokens'
 import { fetchUrl } from '../lib/fetchUrl'
 
-const currentPriceQuery = gql`
-  query CurrentTokenPrice($id: ID!) {
-    fastPrice(id: $id, period: "last") {
-      value
-      token
-      period
-    }
-  }
-`
-
-const priceHistoryQuery = gql`
-  query TokenPrices($id: ID!) {
-    fastPrices(
-      where: { period: "hourly", token: $id }
-      first: 24
-      orderBy: timestamp
-      orderDirection: desc
-    ) {
-      token
-      value
-      timestamp
-      period
-      id
-    }
-  }
-`
-
 async function getHighAndLowPriceOfToken(
   chainId: number,
   tokenAddress: string

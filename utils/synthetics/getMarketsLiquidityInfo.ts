@@ -79,7 +79,7 @@ export async function getMarketsLiquidity(
     const result = results[index];
     if (result && result.result) {
       const gmPrice = (result.result[0] * BigInt(1000) / USD_DIVISOR);
-      const tokenPrice = Number(Number(gmPrice) / 1000);
+      const tokenPrice = Number(gmPrice) / 1000;
       const liquidityUsd = Number(result.result[1].poolValue / USD_DIVISOR);
       acc[marketToken] = {
         tokenPrice,
