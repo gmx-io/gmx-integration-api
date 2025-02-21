@@ -56,7 +56,7 @@ export async function getPerpetualPairsInfo(
         base_volume: volumeUsd / (priceInfo?.close ?? 1),
         target_volume: volumeUsd,
         pool_id: marketToken,
-        liquidity_in_usd: gmLiquidityInfo.liquidityUsd,
+        liquidity_in_usd: gmLiquidityInfo?.liquidityUsd ?? 0,
         open_interest: openInterest.openInterestUsd,
         long_open_interest: openInterest.longInterestUsd,
         short_open_interest: openInterest.shortInterestUsd,

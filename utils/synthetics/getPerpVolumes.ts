@@ -16,8 +16,8 @@ const query = gql`
     positionVolumeInfos(
       orderBy: timestamp
       orderDirection: desc
-      where: { period: "1d", timestamp_gte: $lastTimestamp }
-      first: 1000
+      where: { period: "1h", timestamp_gte: $lastTimestamp }
+      first: 10000
     ) {
       indexToken
       volumeUsd
