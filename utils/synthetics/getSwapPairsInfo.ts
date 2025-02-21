@@ -19,7 +19,7 @@ export async function getSwapPairsInfo(chainId: number) {
   return swapPairs?.map((pair) => {
     const { longToken, shortToken, longTokenInfo, shortTokenInfo, marketToken } = pair
     const pairAddress = `${longToken}-${shortToken}`
-    const liquidityUsd = liquidityInfo[marketToken].liquidityUsd
+    const liquidityUsd = liquidityInfo[marketToken]?.liquidityUsd ?? 0n
     const volumeUsd = pairSwapVolume?.[pairAddress.toLowerCase()] ?? 0
     const longTokenSymbol = longTokenInfo.baseSymbol ?? longTokenInfo.symbol
     const shortTokenSymbol = shortTokenInfo.baseSymbol ?? shortTokenInfo.symbol
