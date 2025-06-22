@@ -2,6 +2,7 @@ import { getDataStoreContract } from '@/config/constants'
 import { getClient } from '@/lib/client'
 import { getMarketsInfo } from './getMarketsInfo'
 import { openInterestKey } from '@/lib/getKeys'
+import { batchedMulticall } from '@/lib/multicallUtils'
 
 const USD_DIVISOR = 10n ** 30n
 
@@ -39,10 +40,9 @@ export async function getMarketsOpenInterest(
     acc[market.marketToken] = marketCalls
     return acc
   }, {})
-
-  const results = (await client.multicall({
-    contracts: Object.values(callsByMarket).flat(),
-  })) as { result: bigint; status: string; error?: string }[]
+  
+  const allCalls = Object.values(callsByMarket).flat()
+  const results = await batchedMulticall<{ result: bigint; status: string; error?: string}>(client, allCalls, 30)
 
   const resultsByMarket = Object.keys(callsByMarket).reduce<
     Record<string, MarketInterestInfo>
@@ -65,7 +65,6 @@ export async function getMarketsOpenInterest(
       shortInterestUsd,
       openInterestUsd,
     }
-
     return acc
   }, {})
 

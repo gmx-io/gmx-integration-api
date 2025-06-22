@@ -3,6 +3,8 @@ import { getClient } from '@/lib/client'
 import { getMarketsInfo } from './getMarketsInfo'
 import { getContractPrices } from './getPrices'
 import { AddressZero, MAX_PNL_FACTOR_FOR_TRADERS } from '@/config/synthetics'
+import { batchedMulticall } from '@/lib/multicallUtils'
+
 const USD_DIVISOR = 10n ** 30n
 
 type MarketsLiquidityInfo = {
@@ -69,9 +71,7 @@ export async function getMarketsLiquidity(
     return acc
   }, {})
 
-  const results = (await client.multicall({
-    contracts: Object.values(callsByMarket).flat(),
-  })) as MarketsLiquidityResult[]
+  const results = await batchedMulticall<MarketsLiquidityResult>(client, Object.values(callsByMarket).flat())
 
   const resultsByMarket = Object.keys(callsByMarket).reduce<
     Record<string, MarketsLiquidityInfo>
