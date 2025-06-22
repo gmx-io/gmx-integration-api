@@ -4,9 +4,8 @@ const MULTICALL_BATCH_SIZE = 50;
 export async function batchedMulticall<T>(
   client: any,
   contracts: any[],
-  batchSize = MULTICALL_BATCH_SIZE
-  // ,
-  // delayMs = 500
+  batchSize = MULTICALL_BATCH_SIZE,
+  delayMs = 500
 ): Promise<T[]> {
   function chunkArray<T>(arr: T[], size: number): T[][] {
     const res: T[][] = []
@@ -25,7 +24,7 @@ export async function batchedMulticall<T>(
     } catch (e) {
       results = results.concat(Array(chunk.length).fill(undefined))
     }
-    // await new Promise(res => setTimeout(res, delayMs))
+    await new Promise(res => setTimeout(res, delayMs))
   }
   return results
 }
