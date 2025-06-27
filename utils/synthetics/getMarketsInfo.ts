@@ -47,10 +47,11 @@ export async function getMarketsInfo(
         const longTokenInfo = findToken(marketInfo.longToken)
         const shortTokenInfo = findToken(marketInfo.shortToken)
         const isSpotMarket = marketInfo.indexToken === AddressZero
-        
-        if (!indexTokenInfo || !longTokenInfo || !shortTokenInfo) {
+
+        if (!indexTokenInfo && !isSpotMarket || !longTokenInfo || !shortTokenInfo) {
           return null
         }
+
         return {
           ...marketInfo,
           indexTokenInfo,
@@ -62,7 +63,7 @@ export async function getMarketsInfo(
     )
 
     // Filtering out for any null results in market token info
-    return detailedMarketInfos.filter(Boolean) as MarketInfo[];
+    return detailedMarketInfos.filter((m): m is MarketInfo => Boolean(m));
 
   } catch (e) {
     console.error(e)

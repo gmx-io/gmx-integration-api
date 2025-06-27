@@ -6,8 +6,8 @@ export async function getSwapMarkets(chainId: number) {
 
   // To remove single token and deprecated GM pools.
   marketInfos = marketInfos.filter(
-    (market) => market.longToken !== market.shortToken &&
-      !market.indexTokenInfo.symbol.endsWith('deprecated')
+    (market) => market.longToken !== market.shortToken
+     && !market.longTokenInfo.symbol.endsWith('deprecated')
   );
 
   const uniqueMarketsMap = new Map<string, MarketInfo>()
