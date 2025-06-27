@@ -73,6 +73,8 @@ export async function getMarketsLiquidity(
 
   const results = await batchedMulticall<MarketsLiquidityResult>(client, Object.values(callsByMarket).flat())
 
+  if (!results) return
+
   const resultsByMarket = Object.keys(callsByMarket).reduce<
     Record<string, MarketsLiquidityInfo>
   >((acc, marketToken, index) => {
@@ -89,5 +91,5 @@ export async function getMarketsLiquidity(
     return acc
   }, {})
 
-  return resultsByMarket
+  return resultsByMarket;
 }
