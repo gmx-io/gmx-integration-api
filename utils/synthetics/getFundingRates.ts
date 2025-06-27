@@ -59,6 +59,8 @@ export async function getFundingRates(chainId: number) {
   })
   
   const results = await batchedMulticall<MarketsResult>(client, Object.values(calls).flat())
+  
+  if (!results) return null
 
   return results.reduce<FundingRates>(
     (acc, { result }: { result: MarketResult }) => {

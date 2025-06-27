@@ -23,7 +23,8 @@ export async function getMarketsOpenInterest(
     return
   }
 
-  const callsByMarket = markets.reduce<Record<string, any[]>>((acc, market) => {
+  const perpMarkets = markets.filter(market => market.type !== 'Spot')
+  const callsByMarket = perpMarkets.reduce<Record<string, any[]>>((acc, market) => {
     const marketCalls = [true, false].flatMap((isLong) => [
       {
         ...contract,
@@ -40,9 +41,11 @@ export async function getMarketsOpenInterest(
     acc[market.marketToken] = marketCalls
     return acc
   }, {})
-  
+
   const allCalls = Object.values(callsByMarket).flat()
   const results = await batchedMulticall<{ result: bigint; status: string; error?: string}>(client, allCalls, 30)
+
+  if (!results) return
 
   const resultsByMarket = Object.keys(callsByMarket).reduce<
     Record<string, MarketInterestInfo>
@@ -54,7 +57,14 @@ export async function getMarketsOpenInterest(
       longShortInterest,
       shortLongInterest,
       shortShortInterest,
-    ] = marketResults.map((result) => Number(result.result / USD_DIVISOR))
+    ] = marketResults.map((result, i) =>{
+        if (!result || typeof result.result === 'undefined') {
+            console.error(`Error in results collected for market index ${i}`)
+            console.log(result)
+            return 0
+        }
+        return Number(result.result / USD_DIVISOR)
+    })
 
     const longInterestUsd = longLongInterest + longShortInterest
     const shortInterestUsd = shortLongInterest + shortShortInterest
