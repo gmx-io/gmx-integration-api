@@ -1,13 +1,13 @@
-import { Chain, createPublicClient, http } from 'viem'
+import { Chain, PublicClient, createPublicClient, http } from 'viem'
 import { arbitrum, avalanche } from 'viem/chains'
 import { ARBITRUM, AVALANCHE } from '../config/constants'
 
-const NETWORK_CLIENT_MAP: Record<number, any> = {
+const NETWORK_CLIENT_MAP: Record<number, Chain> = {
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
 }
 
-export function getClient(chainId: number) {
+export function getClient(chainId: number) : PublicClient {
   const network = NETWORK_CLIENT_MAP[chainId]
   return createPublicClient({
     batch: {

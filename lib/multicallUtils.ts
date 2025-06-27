@@ -1,12 +1,20 @@
+import type { PublicClient } from 'viem'
 
 const MULTICALL_BATCH_SIZE = 50;
+const DELAY_TIME_MS = 500 
 
-export async function batchedMulticall<T>(
-  client: any,
+export type MulticallResult = {
+  result?: unknown;
+  status?: string;
+  error?: string;
+};
+
+export async function batchedMulticall<MulticallResult>(
+  client: PublicClient,
   contracts: any[],
   batchSize = MULTICALL_BATCH_SIZE,
-  delayMs = 500
-): Promise<T[]> {
+  delayMs = DELAY_TIME_MS
+): Promise<MulticallResult[] | undefined> {
   function chunkArray<T>(arr: T[], size: number): T[][] {
     const res: T[][] = []
     for (let i = 0; i < arr.length; i += size) {
@@ -16,11 +24,11 @@ export async function batchedMulticall<T>(
   }
 
   const callChunks = chunkArray(contracts, batchSize)
-  let results: T[] = []
+  let results: (MulticallResult[] | undefined) = []
   for (const chunk of callChunks) {
     try {
       const chunkResults = await client.multicall({ contracts: chunk })
-      results = results.concat(chunkResults as T[])
+      results = results.concat(chunkResults as MulticallResult[])
     } catch (e) {
       results = results.concat(Array(chunk.length).fill(undefined))
     }
