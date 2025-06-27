@@ -4,7 +4,7 @@ export function bigintToString(obj: any): any {
 
   if (Array.isArray(obj)) return obj.map(bigintToString)
 
-  if (obj && typeof obj === 'object') {
+  if (obj !== null && typeof obj === 'object' && Object.getPrototypeOf(obj) === Object.prototype) {
     return Object.fromEntries(
       Object.entries(obj).map(([k, v]) => [k, bigintToString(v)])
     )
