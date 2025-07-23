@@ -1,7 +1,7 @@
 import type { PublicClient } from 'viem'
 
 const MULTICALL_BATCH_SIZE = 50;
-const DELAY_TIME_MS = 500 
+const DELAY_TIME_MS = 500
 
 export type MulticallResult = {
   result?: unknown;
