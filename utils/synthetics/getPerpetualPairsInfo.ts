@@ -60,6 +60,7 @@ export async function getPerpetualPairsInfo(
         open_interest: openInterest.openInterestUsd,
         long_open_interest: openInterest.longInterestUsd,
         short_open_interest: openInterest.shortInterestUsd,
+        index_currency: tokenSymbol,
         funding_rate: fundingPerHour,
         next_funding_rate: nextFundingPerHour,
         next_funding_rate_timestamp: nextFundingRateTimestamp
