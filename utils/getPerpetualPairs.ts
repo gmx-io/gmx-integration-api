@@ -22,8 +22,7 @@ async function getPairMetadata(ticker: string, chainId: number) {
     high,
     base_volume: volumeLast24Hours / ((high + low) / 2),
     target_volume: volumeLast24Hours,
-    open_interest: openInterest,
-    index_currency: ticker
+    open_interest: openInterest
   }
 }
 
