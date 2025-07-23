@@ -1,9 +1,10 @@
-import { ARBITRUM, AVALANCHE } from './constants'
+import { ARBITRUM, AVALANCHE, BOTANIX } from './constants'
 import { getTokens } from '@/utils/synthetics/getTokens'
 
 export const ORACLE_KEEPER_URLS: { [key: number]: string} = {
   [ARBITRUM]: 'https://arbitrum-api.gmxinfra2.io',
   [AVALANCHE]: 'https://avalanche-api.gmxinfra2.io',
+  [BOTANIX]: 'https://botanix-api.gmxinfra2.io'
 }
 
 export const AddressZero = '0x0000000000000000000000000000000000000000'
@@ -14,6 +15,8 @@ export const SYNTHETICS_SUBGRAPHS: { [key: number]: string } = {
     'https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-arbitrum-stats/api',
   [AVALANCHE]:
     'https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-avalanche-stats/api',
+  [BOTANIX]:
+    'https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-botanix-stats/api',
 }
 
 export type Token = {
