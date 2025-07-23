@@ -12,11 +12,11 @@ type PerpVolumeInfo = {
 type AccumulatedVolumes = { [indexToken: string]: number }
 
 const query = gql`
-  query Swap24HVolume($lastTimestamp: Int!) {
+  query Perp24HVolume($lastTimestamp: Int!) {
     positionVolumeInfos(
       orderBy: timestamp
       orderDirection: desc
-      where: { period: "1h", timestamp_gte: $lastTimestamp }
+      where: { period: "1d", timestamp_gte: $lastTimestamp }
       first: 10000
     ) {
       indexToken

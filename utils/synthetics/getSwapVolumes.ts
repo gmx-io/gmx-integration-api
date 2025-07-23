@@ -8,7 +8,7 @@ const query = gql`
     swapVolumeInfos(
       orderBy: timestamp
       orderDirection: desc
-      where: { period: "1h", timestamp_gte: $lastTimestamp }
+      where: { period: "1d", timestamp_gte: $lastTimestamp }
       first: 10000
     ) {
       tokenIn
@@ -22,7 +22,7 @@ type SwapVolumeInfo = {
   tokenOut: string
   volumeUsd: string
   timestamp: number
-  period: '1h'
+  period: '1d'
 }
 
 export async function get24HSwapVolume(chainId: number) {
