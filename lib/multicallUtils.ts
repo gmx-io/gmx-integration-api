@@ -14,7 +14,7 @@ export async function batchedMulticall<MulticallResult>(
   contracts: any[],
   batchSize = MULTICALL_BATCH_SIZE,
   delayMs = DELAY_TIME_MS
-): Promise<MulticallResult[] | undefined> {
+): Promise<(MulticallResult | undefined)[]> {
   function chunkArray<T>(arr: T[], size: number): T[][] {
     const res: T[][] = []
     for (let i = 0; i < arr.length; i += size) {
@@ -24,7 +24,7 @@ export async function batchedMulticall<MulticallResult>(
   }
 
   const callChunks = chunkArray(contracts, batchSize)
-  let results: (MulticallResult[] | undefined) = []
+  let results: (MulticallResult | undefined)[] = []
   for (const chunk of callChunks) {
     try {
       const chunkResults = await client.multicall({ contracts: chunk })
