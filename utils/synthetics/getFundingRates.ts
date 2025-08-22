@@ -63,12 +63,12 @@ export async function getFundingRates(chainId: number) {
   if (!results) return null
 
   return results.reduce<FundingRates>(
-    (acc, { result }: { result: MarketResult }) => {
-      if (result) {
-        acc[result.market.marketToken?.toLowerCase()] = {
-          longsPayShorts: result.nextFunding.longsPayShorts,
-          fundingFactorPerSecond: result.nextFunding.fundingFactorPerSecond,
-          nextSavedFundingFactorPerSecond: result.nextFunding.nextSavedFundingFactorPerSecond,
+    (acc, currentValue: MarketsResult | undefined) => {
+      if (currentValue && currentValue.result) {
+        acc[currentValue.result.market.marketToken?.toLowerCase()] = {
+          longsPayShorts: currentValue.result.nextFunding.longsPayShorts,
+          fundingFactorPerSecond: currentValue.result.nextFunding.fundingFactorPerSecond,
+          nextSavedFundingFactorPerSecond: currentValue.result.nextFunding.nextSavedFundingFactorPerSecond,
         }
       }
       return acc
