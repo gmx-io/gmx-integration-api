@@ -1,4 +1,4 @@
-import type { PublicClient } from 'viem'
+import type { Abi, PublicClient } from 'viem'
 
 const MULTICALL_BATCH_SIZE = 50;
 const DELAY_TIME_MS = 500
@@ -9,14 +9,21 @@ export type MulticallResult = {
   error?: string;
 };
 
+export type MulticallContractCall = {
+  address: `0x${string}`,
+  abi: Abi,
+  functionName: string,
+  args?: readonly unknown[]
+}
+
 export async function batchedMulticall<MulticallResult>(
   client: PublicClient,
-  contracts: any[],
+  contracts: MulticallContractCall[],
   batchSize = MULTICALL_BATCH_SIZE,
   delayMs = DELAY_TIME_MS
 ): Promise<(MulticallResult | undefined)[]> {
-  function chunkArray<T>(arr: T[], size: number): T[][] {
-    const res: T[][] = []
+  function chunkArray<T>(arr: MulticallContractCall[], size: number): MulticallContractCall[][] {
+    const res: MulticallContractCall[][] = []
     for (let i = 0; i < arr.length; i += size) {
       res.push(arr.slice(i, i + size))
     }
