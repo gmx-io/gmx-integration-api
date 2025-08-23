@@ -3,7 +3,6 @@ import DataStore from '../abis/DataStore.json'
 import SyntheticsReader from '../abis/SyntheticReader.json'
 export const AVALANCHE = 43114
 export const ARBITRUM = 42161
-export const BOTANIX = 3637
 export const AddressZero = '0x0000000000000000000000000000000000000000'
 
 export const SUBGRAPHS_API_URLS: { [key: number | string]: string } = {
@@ -29,10 +28,6 @@ export const CONTRACTS: {
   [AVALANCHE]: {
     DataStore: '0x2F0b22339414ADeD7D5F06f9D604c7fF5b2fe3f6',
     SyntheticsReader: '0x73BA021ACF4Bb6741E82690DdB821e7936050f8C',
-  },
-  [BOTANIX]: {
-    DataStore: '0xA23B81a89Ab9D7D89fF8fc1b5d8508fB75Cc094d',
-    SyntheticsReader: '0xcA3D8Ea2aCfd46D7D3732F4264bD62996A04Bb3F',
   },
 }
 

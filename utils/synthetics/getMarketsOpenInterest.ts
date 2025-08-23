@@ -2,7 +2,6 @@ import { getDataStoreContract } from '@/config/constants'
 import { getClient } from '@/lib/client'
 import { getMarketsInfo } from './getMarketsInfo'
 import { openInterestKey } from '@/lib/getKeys'
-import { batchedMulticall } from '@/lib/multicallUtils'
 
 const USD_DIVISOR = 10n ** 30n
 
@@ -23,8 +22,7 @@ export async function getMarketsOpenInterest(
     return
   }
 
-  const perpMarkets = markets.filter(market => market.type !== 'Spot')
-  const callsByMarket = perpMarkets.reduce<Record<string, any[]>>((acc, market) => {
+  const callsByMarket = markets.reduce<Record<string, any[]>>((acc, market) => {
     const marketCalls = [true, false].flatMap((isLong) => [
       {
         ...contract,
@@ -42,10 +40,9 @@ export async function getMarketsOpenInterest(
     return acc
   }, {})
 
-  const allCalls = Object.values(callsByMarket).flat()
-  const results = await batchedMulticall<{ result: bigint; status: string; error?: string}>(client, allCalls, 30)
-
-  if (!results) return
+  const results = (await client.multicall({
+    contracts: Object.values(callsByMarket).flat(),
+  })) as { result: bigint; status: string; error?: string }[]
 
   const resultsByMarket = Object.keys(callsByMarket).reduce<
     Record<string, MarketInterestInfo>
@@ -57,14 +54,7 @@ export async function getMarketsOpenInterest(
       longShortInterest,
       shortLongInterest,
       shortShortInterest,
-    ] = marketResults.map((result, i) =>{
-        if (!result || typeof result.result === 'undefined') {
-            console.error(`Error in results collected for market index ${i}`)
-            console.log(result)
-            return 0
-        }
-        return Number(result.result / USD_DIVISOR)
-    })
+    ] = marketResults.map((result) => Number(result.result / USD_DIVISOR))
 
     const longInterestUsd = longLongInterest + longShortInterest
     const shortInterestUsd = shortLongInterest + shortShortInterest
@@ -75,6 +65,7 @@ export async function getMarketsOpenInterest(
       shortInterestUsd,
       openInterestUsd,
     }
+
     return acc
   }, {})
 
