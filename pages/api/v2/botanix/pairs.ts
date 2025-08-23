@@ -1,11 +1,11 @@
-import { AVALANCHE } from '@/config/constants'
+import { BOTANIX } from '@/config/constants'
 import { getPerpetualPairsInfo } from '@/utils/synthetics/getPerpetualPairsInfo'
 import { getSwapPairsInfo } from '@/utils/synthetics/getSwapPairsInfo'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { bigintToString } from '@/lib/bigintToString'
 
 async function handleRequest(_req: NextApiRequest, res: NextApiResponse) {
-  const currentNetwork = AVALANCHE
+  const currentNetwork = BOTANIX
   try {
     const [perpetualPairs, spotPairs] = await Promise.all([
       getPerpetualPairsInfo(currentNetwork),

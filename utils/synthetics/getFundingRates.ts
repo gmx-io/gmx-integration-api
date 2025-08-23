@@ -6,6 +6,7 @@ import { getClient } from '@/lib/client'
 import { getPerpetualMarkets } from './getPerpetualMarkets'
 import { ContractFunctionParameters } from 'viem'
 import { getContractPrices } from './getPrices'
+import { batchedMulticall } from '@/lib/multicallUtils'
 
 type FundingRates = {
   [key: string]: {
@@ -56,18 +57,18 @@ export async function getFundingRates(chainId: number) {
       args: [dataStoreAddress, tokensPrices, market.marketToken],
     }
   })
-
-  const results = (await client.multicall({
-    contracts: calls,
-  })) as MarketsResult[]
+  
+  const results = await batchedMulticall<MarketsResult>(client, Object.values(calls).flat())
+  
+  if (!results) return null
 
   return results.reduce<FundingRates>(
-    (acc, { result }: { result: MarketResult }) => {
-      if (result) {
-        acc[result.market.marketToken?.toLowerCase()] = {
-          longsPayShorts: result.nextFunding.longsPayShorts,
-          fundingFactorPerSecond: result.nextFunding.fundingFactorPerSecond,
-          nextSavedFundingFactorPerSecond: result.nextFunding.nextSavedFundingFactorPerSecond,
+    (acc, currentValue: MarketsResult | undefined) => {
+      if (currentValue && currentValue.result) {
+        acc[currentValue.result.market.marketToken?.toLowerCase()] = {
+          longsPayShorts: currentValue.result.nextFunding.longsPayShorts,
+          fundingFactorPerSecond: currentValue.result.nextFunding.fundingFactorPerSecond,
+          nextSavedFundingFactorPerSecond: currentValue.result.nextFunding.nextSavedFundingFactorPerSecond,
         }
       }
       return acc
