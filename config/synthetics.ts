@@ -19,6 +19,15 @@ export const SYNTHETICS_SUBGRAPHS: { [key: number]: string } = {
     'https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-botanix-stats/api',
 }
 
+export const SQUID_SYNTHETICS_SUBGRAPHS: { [key: number]: string } = {
+  [ARBITRUM]:
+    'https://gmx.squids.live/gmx-synthetics-arbitrum:prod/api/graphql',
+  [AVALANCHE]:
+    'https://gmx.squids.live/gmx-synthetics-avalanche:prod/api/graphql',
+  [BOTANIX]:
+    'https://gmx.squids.live/gmx-synthetics-botanix:prod/api/graphql',
+}
+
 export type Token = {
   name: string
   symbol: string

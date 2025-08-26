@@ -1,26 +1,21 @@
-import { SYNTHETICS_SUBGRAPHS } from '@/config/synthetics'
+import { SQUID_SYNTHETICS_SUBGRAPHS } from '@/config/synthetics'
 import fetchGraphQL from '@/lib/fetchGraphQL'
 import { gql } from 'graphql-request'
 
 const USD_VOLUME_DIVISOR = 1e30
 
-type PerpVolumeInfo = {
-  indexToken: string
-  volumeUsd: string
+type PositionVolumeInfo = {
+  volume: string,
+  market: string
 }
 
 type AccumulatedVolumes = { [indexToken: string]: number }
 
 const query = gql`
-  query Perp24HVolume($lastTimestamp: Int!) {
-    positionVolumeInfos(
-      orderBy: timestamp
-      orderDirection: desc
-      where: { period: "1d", timestamp_gte: $lastTimestamp }
-      first: 10000
-    ) {
-      indexToken
-      volumeUsd
+  query Perp24HVolume($lastTimestamp: Float!) {
+    positionsVolume(where: { timestamp: $lastTimestamp } ) {
+      volume
+      market
     }
   }
 `
@@ -28,17 +23,17 @@ const query = gql`
 export async function getPerpVolumes(
   chainId: number
 ): Promise<AccumulatedVolumes | null> {
-  const endpoint = SYNTHETICS_SUBGRAPHS[chainId]
+  const endpoint = SQUID_SYNTHETICS_SUBGRAPHS[chainId]
   const timestamp24hAgo =
     Math.floor(Date.now() / 1000 / 3600) * 3600 - 86400
   try {
-    const { positionVolumeInfos } = await fetchGraphQL<{
-      positionVolumeInfos: PerpVolumeInfo[]
+    const { positionsVolume } = await fetchGraphQL<{
+      positionsVolume: PositionVolumeInfo[]
     }>(endpoint, query, { lastTimestamp: timestamp24hAgo })
-    const accumulatedVolumes = positionVolumeInfos.reduce(
-      (acc: AccumulatedVolumes, { indexToken, volumeUsd }) => {
-        const volume = Number(volumeUsd) / USD_VOLUME_DIVISOR
-        acc[indexToken] = (acc[indexToken] || 0) + volume
+    const accumulatedVolumes = positionsVolume.reduce(
+      (acc: AccumulatedVolumes, { market, volume }) => {
+        const volumeUsd = Number(volume) / USD_VOLUME_DIVISOR
+        acc[market.toLowerCase()] = (acc[market.toLowerCase()] || 0) + volumeUsd
         return acc
       },
       {}
