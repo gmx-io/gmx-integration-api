@@ -40,7 +40,7 @@ export async function getPerpetualPairsInfo(
       const priceInfo = prices.find((price) =>
         isSameStr(price.tokenSymbol, tokenSymbol)
       )
-      const volumeUsd = volumeInfo[indexToken]
+      const volumeUsd = volumeInfo[marketToken] === undefined ? 0 :volumeInfo[marketToken];
       const gmLiquidityInfo = liquidityInfo[marketToken]
       const longTokenSymbol = market.longTokenInfo.symbol;
       const shortTokenSymbol = market.shortTokenInfo.symbol;
