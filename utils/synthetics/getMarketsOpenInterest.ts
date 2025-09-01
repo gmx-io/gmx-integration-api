@@ -50,6 +50,8 @@ export async function getMarketsOpenInterest(
   const resultsByMarket = Object.keys(callsByMarket).reduce<
     Record<string, MarketInterestInfo>
   >((acc, marketToken, index) => {
+    const market = perpMarkets.find(m => m.marketToken == marketToken);
+    const isSameToken = market?.longToken === market?.shortToken;
     const baseIndex = index * 4
     const marketResults = results.slice(baseIndex, baseIndex + 4)
     const [
@@ -66,8 +68,9 @@ export async function getMarketsOpenInterest(
         return Number(result.result / USD_DIVISOR)
     })
 
-    const longInterestUsd = longLongInterest + longShortInterest
-    const shortInterestUsd = shortLongInterest + shortShortInterest
+    // When isSameToken is true the values are duplicated for both long and short tokens. 
+    const longInterestUsd = longLongInterest + (isSameToken ? 0: longShortInterest); 
+    const shortInterestUsd = shortLongInterest + (isSameToken ? 0: shortShortInterest);
     const openInterestUsd = longInterestUsd + shortInterestUsd
 
     acc[marketToken] = {
