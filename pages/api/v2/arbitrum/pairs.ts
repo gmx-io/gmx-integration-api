@@ -1,17 +1,17 @@
+import { ARBITRUM } from '@/config/constants'
+import { getPerpetualPairsInfo } from '@/utils/synthetics/getPerpetualPairsInfo'
+import { getSwapPairsInfo } from '@/utils/synthetics/getSwapPairsInfo'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { ARBITRUM } from '../../../config/constants'
-import getPerpetualPairs from '../../../utils/getPerpetualPairs'
-import getSpotPairs from '../../../utils/getSpotPairs'
+import { bigintToString } from '@/lib/bigintToString'
 
-async function handleRequest(req: NextApiRequest, res: NextApiResponse) {
+async function handleRequest(_req: NextApiRequest, res: NextApiResponse) {
   const currentNetwork = ARBITRUM
   try {
     const [perpetualPairs, spotPairs] = await Promise.all([
-      getPerpetualPairs(currentNetwork),
-      getSpotPairs(currentNetwork),
+      getPerpetualPairsInfo(currentNetwork),
+      getSwapPairsInfo(currentNetwork),
     ])
-
-    res.status(200).json(perpetualPairs.concat(spotPairs))
+    res.status(200).json(bigintToString((perpetualPairs ?? []).concat(spotPairs ?? [])))
   } catch (error) {
     console.error('GraphQL request failed:', error)
     res.status(500).json({ error: 'An error occurred while fetching data' })

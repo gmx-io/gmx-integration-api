@@ -1,7 +1,7 @@
+import { Pair } from '@/lib/types'
 import { getPerpTokens, getTokenBySymbol } from '../config/tokens'
 import { getTokenOpenInterest } from './getTokenOpenInterest'
 import { getTokenPrice } from './prices'
-import { Pair } from './types'
 import { getLast24hVolume } from './volume'
 
 async function getPairMetadata(ticker: string, chainId: number) {
@@ -17,12 +17,12 @@ async function getPairMetadata(ticker: string, chainId: number) {
     base_currency: ticker,
     target_currency: 'USD',
     product_type: 'Perpetual',
-    last_price: lastPrice,
+    last_price: lastPrice ?? 0,
     low,
     high,
     base_volume: volumeLast24Hours / ((high + low) / 2),
     target_volume: volumeLast24Hours,
-    open_interest: openInterest,
+    open_interest: openInterest
   }
 }
 
@@ -31,9 +31,8 @@ export default async function getPerpetualPairs(
 ): Promise<Pair[]> {
   const tokens = getPerpTokens(chainId)
   return Promise.all(
-    tokens.map(async (token) => {
-      const pair = await getPairMetadata(token.symbol, chainId)
-      return pair
+    tokens.map((token) => {
+      return getPairMetadata(token.symbol, chainId)
     })
   )
 }
