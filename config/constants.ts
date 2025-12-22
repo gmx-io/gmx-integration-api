@@ -24,15 +24,15 @@ export const CONTRACTS: {
 } = {
   [ARBITRUM]: {
     DataStore: '0xFD70de6b91282D8017aA4E741e9Ae325CAb992d8',
-    SyntheticsReader: '0xf60becbba223EEA9495Da3f606753867eC10d139',
+    SyntheticsReader: '0x470fbC46bcC0f16532691Df360A07d8Bf5ee0789',
   },
   [AVALANCHE]: {
     DataStore: '0x2F0b22339414ADeD7D5F06f9D604c7fF5b2fe3f6',
-    SyntheticsReader: '0x73BA021ACF4Bb6741E82690DdB821e7936050f8C',
+    SyntheticsReader: '0x62Cb8740E6986B29dC671B2EB596676f60590A5B',
   },
   [BOTANIX]: {
     DataStore: '0xA23B81a89Ab9D7D89fF8fc1b5d8508fB75Cc094d',
-    SyntheticsReader: '0xcA3D8Ea2aCfd46D7D3732F4264bD62996A04Bb3F',
+    SyntheticsReader: '0x922766ca6234cD49A483b5ee8D86cA3590D0Fb0E',
   },
 }
 
