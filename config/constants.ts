@@ -8,9 +8,9 @@ export const AddressZero = '0x0000000000000000000000000000000000000000'
 
 export const SUBGRAPHS_API_URLS: { [key: number | string]: string } = {
   [ARBITRUM]:
-    'https://subgraph.satsuma-prod.com/9d997f2f923e/gmx/gmx-arbitrum-stats/api',
+    'https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/gmx-arbitrum-stats/synts-stats-230627214534-0265e1f/gn',
   [AVALANCHE]:
-    'https://subgraph.satsuma-prod.com/9d997f2f923e/gmx/gmx-avalanche-stats/api',
+    'https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/gmx-avalanche-stats/master-240711235903-da2d1a1/gn',
   chainlink: 'https://api.thegraph.com/subgraphs/name/deividask/chainlink',
 }
 
