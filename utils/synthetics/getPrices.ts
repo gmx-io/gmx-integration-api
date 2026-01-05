@@ -2,13 +2,13 @@ import { gql } from 'graphql-request'
 import fetchGraphQL from '../../lib/fetchGraphQL'
 import {
   ORACLE_KEEPER_URLS,
-  SYNTHETICS_SUBGRAPHS,
+  SQUID_SYNTHETICS_SUBGRAPHS,
 } from '../../config/synthetics'
 import { fetchUrl } from '@/lib/fetchUrl'
 
 const query = gql`
   query TokenPrices {
-    tokenPrices {
+    prices(where: { isSnapshot_eq: false, type_eq: v2 }, limit: 1000) {
       maxPrice
       minPrice
       id
@@ -32,13 +32,13 @@ type TokenPrices = {
 export async function getContractPrices(
   chainId: number
 ): Promise<TokenPrices | null> {
-  const endpoint = SYNTHETICS_SUBGRAPHS[chainId]
+  const endpoint = SQUID_SYNTHETICS_SUBGRAPHS[chainId]
   try {
-    const { tokenPrices } = await fetchGraphQL<{
-      tokenPrices: TokenPriceInfo[]
+    const { prices } = await fetchGraphQL<{
+      prices: TokenPriceInfo[]
     }>(endpoint, query)
 
-    const mappedPrices = tokenPrices.reduce<TokenPrices>(
+    const mappedPrices = prices.reduce<TokenPrices>(
       (acc, { id, minPrice, maxPrice }) => {
         acc[id] = { min: minPrice, max: maxPrice }
         return acc
