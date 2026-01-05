@@ -1,20 +1,33 @@
 import { gql } from 'graphql-request'
-import { SYNTHETICS_SUBGRAPHS, Token, getTokensCached } from '../../config/synthetics'
+import {
+  SQUID_SYNTHETICS_SUBGRAPHS,
+  Token,
+  getTokensCached,
+} from '../../config/synthetics'
 import fetchGraphQL from '../../lib/fetchGraphQL'
 import { AddressZero } from '../../config/constants'
 
 const query = gql`
   query Markets {
-    marketInfos {
+    marketInfos(limit: 1000) {
       id
-      indexToken
-      longToken
-      marketToken
-      marketTokensSupply
-      shortToken
+      marketTokenAddress
+      indexTokenAddress
+      longTokenAddress
+      shortTokenAddress
+      marketTokenSupply
     }
   }
 `
+
+type SquidMarketInfo = {
+  id: string
+  marketTokenAddress: string
+  indexTokenAddress: string
+  longTokenAddress: string
+  shortTokenAddress: string
+  marketTokenSupply: string
+}
 
 export type MarketInfo = {
   id: string
@@ -32,21 +45,20 @@ export type MarketInfo = {
 export async function getMarketsInfo(
   chainId: number
 ): Promise<MarketInfo[] | null> {
-  const endpoint = SYNTHETICS_SUBGRAPHS[chainId]
+  const endpoint = SQUID_SYNTHETICS_SUBGRAPHS[chainId]
   try {
-    const { marketInfos } = await fetchGraphQL<{ marketInfos: MarketInfo[] }>(
-      endpoint,
-      query
-    )
+    const { marketInfos } = await fetchGraphQL<{
+      marketInfos: SquidMarketInfo[]
+    }>(endpoint, query)
     const tokens = await getTokensCached(chainId)
-    const findToken = (address: string) => 
+    const findToken = (address: string) =>
       tokens.find((t) => t.address.toLowerCase() === address.toLowerCase())
     const detailedMarketInfos = await Promise.all(
       marketInfos.map(async (marketInfo) => {
-        const indexTokenInfo = findToken(marketInfo.indexToken)
-        const longTokenInfo = findToken(marketInfo.longToken)
-        const shortTokenInfo = findToken(marketInfo.shortToken)
-        const isSpotMarket = marketInfo.indexToken === AddressZero
+        const indexTokenInfo = findToken(marketInfo.indexTokenAddress)
+        const longTokenInfo = findToken(marketInfo.longTokenAddress)
+        const shortTokenInfo = findToken(marketInfo.shortTokenAddress)
+        const isSpotMarket = marketInfo.indexTokenAddress === AddressZero
 
         if (!indexTokenInfo && !isSpotMarket || !longTokenInfo || !shortTokenInfo) {
           return null
@@ -54,6 +66,11 @@ export async function getMarketsInfo(
 
         return {
           ...marketInfo,
+          indexToken: marketInfo.indexTokenAddress,
+          longToken: marketInfo.longTokenAddress,
+          marketToken: marketInfo.marketTokenAddress,
+          marketTokensSupply: marketInfo.marketTokenSupply,
+          shortToken: marketInfo.shortTokenAddress,
           indexTokenInfo,
           longTokenInfo,
           shortTokenInfo,
@@ -64,7 +81,6 @@ export async function getMarketsInfo(
 
     // Filtering out for any null results in market token info
     return detailedMarketInfos.filter((m): m is MarketInfo => Boolean(m));
-
   } catch (e) {
     console.error(e)
     return null

@@ -1,15 +1,14 @@
 import { gql } from 'graphql-request'
-import { SYNTHETICS_SUBGRAPHS, Token, getToken } from '../../config/synthetics'
+import { SQUID_SYNTHETICS_SUBGRAPHS } from '../../config/synthetics'
 import fetchGraphQL from '../../lib/fetchGraphQL'
 import { getSwapMarkets } from './getSwapMarkets'
 
 const query = gql`
   query Swap24HVolume($lastTimestamp: Int!) {
     swapVolumeInfos(
-      orderBy: timestamp
-      orderDirection: desc
-      where: { period: "1d", timestamp_gte: $lastTimestamp }
-      first: 10000
+      orderBy: timestamp_DESC
+      where: { period_eq: "1d", timestamp_gte: $lastTimestamp }
+      limit: 1000
     ) {
       tokenIn
       tokenOut
@@ -26,7 +25,7 @@ type SwapVolumeInfo = {
 }
 
 export async function get24HSwapVolume(chainId: number) {
-  const endpoint = SYNTHETICS_SUBGRAPHS[chainId]
+  const endpoint = SQUID_SYNTHETICS_SUBGRAPHS[chainId]
   const lastPeriodFor24Hours =
     Math.floor(Date.now() / 1000 / 3600) * 3600 - 60 * 60 * 24
   try {
