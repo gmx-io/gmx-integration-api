@@ -33,7 +33,7 @@ export async function getPerpVolumes(
     const accumulatedVolumes = positionsVolume.reduce(
       (acc: AccumulatedVolumes, { market, volume }) => {
         const volumeUsd = Number(volume) / USD_VOLUME_DIVISOR
-        acc[market.toLowerCase()] = (acc[market.toLowerCase()] || 0) + volumeUsd
+        acc[market] = (acc[market] || 0) + volumeUsd
         return acc
       },
       {}
