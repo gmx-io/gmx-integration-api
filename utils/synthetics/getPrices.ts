@@ -11,7 +11,7 @@ const query = gql`
     prices(where: { isSnapshot_eq: false, type_eq: v2 }, limit: 1000) {
       maxPrice
       minPrice
-      id
+      token
     }
   }
 `
@@ -19,7 +19,7 @@ const query = gql`
 type TokenPriceInfo = {
   maxPrice: string
   minPrice: string
-  id: string
+  token: string
 }
 
 type TokenPrices = {
@@ -39,8 +39,8 @@ export async function getContractPrices(
     }>(endpoint, query)
 
     const mappedPrices = prices.reduce<TokenPrices>(
-      (acc, { id, minPrice, maxPrice }) => {
-        acc[id] = { min: minPrice, max: maxPrice }
+      (acc, { minPrice, maxPrice, token }) => {
+        acc[token] = { min: minPrice, max: maxPrice }
         return acc
       },
       {}

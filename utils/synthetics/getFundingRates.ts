@@ -65,7 +65,7 @@ export async function getFundingRates(chainId: number) {
   return results.reduce<FundingRates>(
     (acc, currentValue: MarketsResult | undefined) => {
       if (currentValue && currentValue.result) {
-        acc[currentValue.result.market.marketToken?.toLowerCase()] = {
+        acc[currentValue.result.market.marketToken] = {
           longsPayShorts: currentValue.result.nextFunding.longsPayShorts,
           fundingFactorPerSecond: currentValue.result.nextFunding.fundingFactorPerSecond,
           nextSavedFundingFactorPerSecond: currentValue.result.nextFunding.nextSavedFundingFactorPerSecond,
