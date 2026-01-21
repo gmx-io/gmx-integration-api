@@ -10,16 +10,29 @@ import { getMarketsLiquidity } from './getMarketsLiquidityInfo'
 export async function getPerpetualPairsInfo(
   chainId: number
 ): Promise<Pair[] | null> {
-  const [perpMarkets, prices, volumeInfo, openInterestByMarket, fundingRates, liquidityInfo] = await Promise.all([
+  const [
+    perpMarkets,
+    prices,
+    volumeInfo,
+    openInterestByMarket,
+    fundingRates,
+    liquidityInfo,
+  ] = await Promise.all([
     getPerpetualMarkets(chainId),
     getTokensPrice(chainId),
     getPerpVolumes(chainId),
     getMarketsOpenInterest(chainId),
     getFundingRates(chainId),
-    getMarketsLiquidity(chainId)
+    getMarketsLiquidity(chainId),
   ])
 
-  if (!perpMarkets || !prices || !volumeInfo || !openInterestByMarket || !liquidityInfo)
+  if (
+    !perpMarkets ||
+    !prices ||
+    !volumeInfo ||
+    !openInterestByMarket ||
+    !liquidityInfo
+  )
     return null
 
   return perpMarkets
@@ -31,20 +44,25 @@ export async function getPerpetualPairsInfo(
         fundingRate?.fundingFactorPerSecond,
         fundingRate?.longsPayShorts
       )
-      const nextFundingPerHour =  getFundingPerHour(
+      const nextFundingPerHour = getFundingPerHour(
         fundingRate?.nextSavedFundingFactorPerSecond,
         fundingRate?.longsPayShorts
       )
-      const nextFundingRateTimestamp = Math.floor(Date.now() / 1000 / 3600) * 3600 + 3600
+      const nextFundingRateTimestamp =
+        Math.floor(Date.now() / 1000 / 3600) * 3600 + 3600
       const tokenSymbol = indexTokenInfo.baseSymbol ?? indexTokenInfo.symbol
       const priceInfo = prices.find((price) =>
         isSameStr(price.tokenSymbol, tokenSymbol)
       )
-      const volumeUsd = volumeInfo[marketToken] === undefined ? 0 :volumeInfo[marketToken];
+      const volumeUsd =
+        volumeInfo[marketToken] === undefined ? 0 : volumeInfo[marketToken]
       const gmLiquidityInfo = liquidityInfo[marketToken]
-      const longTokenSymbol = market.longTokenInfo.symbol;
-      const shortTokenSymbol = market.shortTokenInfo.symbol;
-      const collateralSymbols = `${longTokenSymbol}${longTokenSymbol !== shortTokenSymbol ? `-${shortTokenSymbol}`: ''}`;
+      const longTokenSymbol = market.longTokenInfo.symbol
+      const shortTokenSymbol = market.shortTokenInfo.symbol
+      const collateralSymbols = `${longTokenSymbol}${
+        longTokenSymbol !== shortTokenSymbol ? `-${shortTokenSymbol}` : ''
+      }`
+
       return {
         ticker_id: `${tokenSymbol}/USD [${collateralSymbols}]`,
         base_currency: tokenSymbol,
@@ -56,13 +74,13 @@ export async function getPerpetualPairsInfo(
         base_volume: volumeUsd / (priceInfo?.close ?? 1),
         target_volume: volumeUsd,
         pool_id: marketToken,
-        liquidity_in_usd: gmLiquidityInfo?.liquidityUsd ?? 0,
+        liquidity_in_usd: Number(gmLiquidityInfo?.liquidityUsd ?? 0),
         open_interest: openInterest.openInterestUsd,
         long_open_interest: openInterest.longInterestUsd,
         short_open_interest: openInterest.shortInterestUsd,
         funding_rate: fundingPerHour,
         next_funding_rate: nextFundingPerHour,
-        next_funding_rate_timestamp: nextFundingRateTimestamp
+        next_funding_rate_timestamp: nextFundingRateTimestamp,
       }
     })
     .filter(Boolean)

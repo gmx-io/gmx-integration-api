@@ -37,7 +37,7 @@ export async function get24HSwapVolume(chainId: number) {
     const accumulatedVolumes = swapVolumeInfos.reduce(
       (acc, { tokenIn, tokenOut, volumeUsd }) => {
         const key = `${tokenIn}-${tokenOut}`
-        const volume = Number(volumeUsd) / 1e30
+        const volume = BigInt(volumeUsd)
         if (acc[key]) {
           acc[key] += volume
         } else {
@@ -45,7 +45,7 @@ export async function get24HSwapVolume(chainId: number) {
         }
         return acc
       },
-      {} as { [key: string]: number }
+      {} as { [key: string]: bigint }
     )
 
     const combinedVolumes = swapPairs?.reduce(
@@ -55,7 +55,8 @@ export async function get24HSwapVolume(chainId: number) {
 
         const volume =
           accumulatedVolumes[key] || accumulatedVolumes[reverseKey] || 0
-        acc[key] = (acc[key] || 0) + volume
+
+        acc[key] = (acc[key] || 0) + Number(volume) / 1e30
         return acc
       },
       {} as { [pairAddress: string]: number }
